@@ -1,5 +1,5 @@
----
-Main conf
+
+MainNet config
 ---
 
 ### V Systems Node Configuration Parameters

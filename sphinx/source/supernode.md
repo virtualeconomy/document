@@ -1,5 +1,5 @@
 ---
-Super node
+SuperNOdes Deployment
 ---
 ### Introduction
 In VEE blockchain system, only supernodes have the right to minting blocks and getting VVV rewards. In this wiki we will give you details on deploying a supernode. Additionally, a few recommendations are provided to increase security of the blockchain and the safety of your coins. We assume you have read [[How to install VSYS testnet Node]] and [[VSYS Testnet Node Configuration File]]. You are recommended to deploy a supernode on testnet first.
@@ -12,6 +12,6 @@ Once you meet the prerequisites, you are able to contend for a minting slot. Che
 ### Wallet and reward settings
 To make your VSYS secure, we recommend you set your account to be a `cold minting` status.
 * Store your huge amount of VSYS in your cold wallet and lease money to the account that you are going to contend a minting slot
-* Set the reward address to be your cold wallet address (refer to `Minter settings` at [V Systems Testnet Node Configuration File](/01.home/02testconf), [V Systems Mainnet Node Configuration File](/01.home/04mainconf)
+* Set the reward address to be your cold wallet address (refer to `Minter settings` at [V Systems Testnet Node Configuration File](/testconf), [V Systems Mainnet Node Configuration File](/mainconf)
 ### API settings
-We strongly recommend you setup a standby node and disable API of your minter (refer to REST API settings at [V Systems Testnet Node Configuration File](/01.home/02testconf), [V Systems Mainnet Node Configuration File](/01.home/04mainconf)
+We strongly recommend you setup a standby node and disable API of your minter (refer to REST API settings at [V Systems Testnet Node Configuration File](/testconf), [V Systems Mainnet Node Configuration File](/mainconf)

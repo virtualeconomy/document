@@ -19,39 +19,39 @@
 
 
 ### Testnet Installation and Configuration
-* [How to Install V Systems Testnet Node](/01.home/01installtest)
-* [V Systems Testnet Node Configuration File](/01.home/02testconf)
+* [How to Install V Systems Testnet Node](/testnet)
+* [V Systems Testnet Node Configuration File](/testconf)
 
 
 ### Mainnet Installation and Configuration
-* [How to Install V Systems Mainnet Node](/01.home/03installmain)
-* [V Systems Mainnet Node Configuration File](/01.home/04mainconf)
+* [How to Install V Systems Mainnet Node](/mainnet)
+* [V Systems Mainnet Node Configuration File](/mainconf)
 
 
 ### Supernodes Deployment
-* [How to Deploy Supernodes in V Systems Blockchain](/01.home/05supernode)
+* [How to Deploy Supernodes in V Systems Blockchain](/SuperNode)
 
 
 ### V Web Wallet
 * Source Code: [V Wallet GUI](https://github.com/virtualeconomy/v-wallet-gui)
-* [How to use V Wallet (English)](/01.home/06usewallet)
-* [如何使用V钱包客户端 (中文)](/01.home/07usewalletcn)
+* [How to use V Wallet (English)](/wallet)
+* [如何使用V钱包客户端 (中文)](/walletcn)
 
 
 ### V Mobile Wallet
 * Source Code: [V Cold Wallet](https://github.com/virtualeconomy/v-cold-android)
-* [How to Use V Cold Wallet (English)](/01.home/08usecoldwallet)
-* [如何使用V冷钱包 (中文)](/01.home/09usecoldwalletcn)
+* [How to Use V Cold Wallet (English)](/coldwallet)
+* [如何使用V冷钱包 (中文)](/coldwalletcn)
 
 
 ### V Walk Wallet (Co-Dev with Community Team Walk Wallet)
-* [V Coin Walk Wallet Instructions (English)](/01.home/10walkwallet)
-* [V幣Walk數字貨幣錢包簡介 (中文)](/01.home/11walkwalletcn)
+* [V Coin Walk Wallet Instructions (English)](/walkwallet)
+* [V幣Walk數字貨幣錢包簡介 (中文)](/walkwalletcn)
 
 ### Exchanges Related Documents
-* [Instructions for Exchanges](/01.home/12exchanges)
-* [交易所对接指南(中文)](/01.home/13exchangescn)
-* [Exchange Integration FAQ](/01.home/14FAQ)
+* [Instructions for Exchanges](/exchanges)
+* [交易所对接指南(中文)](/exchangescn)
+* [Exchange Integration FAQ](/FAQ)
 
 ### Other Tools
 * Source Code: [Wallet Generator (Scala)](https://github.com/virtualeconomy/vsys-wallet-generator)

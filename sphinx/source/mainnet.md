@@ -1,7 +1,7 @@
+
+Install MainNet
 ---
-Install main
----
-This page is for mainnet. To install testnet node, please go to [How to install V Systems testnet Node](/01.home/01installtest)
+This page is for mainnet. To install testnet node, please go to [How to install V Systems testnet Node](/testnet)
 
 ### Install JRE 1.8
 
@@ -80,7 +80,7 @@ Just download latest vsys deb and install it with
 sudo dpkg -i vsys*.deb
 ```
 
-Now it's time to check your vsys config! It's embedded into the deb package and unpacked to /usr/share/vsys/conf/vsys.conf and symlinked to /etc/vsys/vsys.conf. Please read [V Systems Mainnet Node Configuration File](/01.home/04mainconf) and edit vsys config with caution.
+Now it's time to check your vsys config! It's embedded into the deb package and unpacked to /usr/share/vsys/conf/vsys.conf and symlinked to /etc/vsys/vsys.conf. Please read [V Systems Mainnet Node Configuration File](/mainconf) and edit vsys config with caution.
 
 Systemd users can start the node with 
 

@@ -1,5 +1,5 @@
----
-Test
+
+TestNet config
 ---
 ### V Systems Node Configuration Parameters
 ### TestNet config in DEB-packages
