@@ -19,7 +19,7 @@
 
 
 ### Testnet Installation and Configuration
-* [How to Install V Systems Testnet Node](https://vsys.readthedocs.io/en/latest/testnet.html)
+* [How to Install V Systems Testnet Node](https://www.baidu.com)
 * [V Systems Testnet Node Configuration File](/testconf)
 
 
