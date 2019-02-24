@@ -2,7 +2,7 @@
 ---
 这篇文档主要描述了交易所如何一步一步完成和V Systems (VSYS)区块链的对接交互。
 
-For English version Instructions for Exchanges, please click [here](/exchanges)
+For English version Instructions for Exchanges, please click [here](https://vsys.readthedocs.io/en/latest/exchanges.html)
 
 ### 准备工作
 
@@ -522,4 +522,4 @@ $ curl -X GET 'http://<节点ip>:9922/transactions/address/ATt6P4vSpBvBTHdV5V9PJ
 ```
 
 ### 常见问题
-* [Exchange Integration FAQ](/FAQ)
+* [Exchange Integration FAQ](https://vsys.readthedocs.io/en/latest/FAQ.html)

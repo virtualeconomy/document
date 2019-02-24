@@ -12,6 +12,6 @@ Once you meet the prerequisites, you are able to contend for a minting slot. Che
 ### Wallet and reward settings
 To make your VSYS secure, we recommend you set your account to be a `cold minting` status.
 * Store your huge amount of VSYS in your cold wallet and lease money to the account that you are going to contend a minting slot
-* Set the reward address to be your cold wallet address (refer to `Minter settings` at [V Systems Testnet Node Configuration File](/testconf), [V Systems Mainnet Node Configuration File](/mainconf)
+* Set the reward address to be your cold wallet address (refer to `Minter settings` at [V Systems Testnet Node Configuration File](https://vsys.readthedocs.io/en/latest/testconf.html), [V Systems Mainnet Node Configuration File](https://vsys.readthedocs.io/en/latest/mainconf.html)
 ### API settings
-We strongly recommend you setup a standby node and disable API of your minter (refer to REST API settings at [V Systems Testnet Node Configuration File](/testconf), [V Systems Mainnet Node Configuration File](/mainconf)
+We strongly recommend you setup a standby node and disable API of your minter (refer to REST API settings at [V Systems Testnet Node Configuration File](https://vsys.readthedocs.io/en/latest/testconf.html), [V Systems Mainnet Node Configuration File](https://vsys.readthedocs.io/en/latest/mainconf.html)

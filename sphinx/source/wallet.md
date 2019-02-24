@@ -1,7 +1,7 @@
 
 How to use V-Wallet
 ---
-[如何使用V钱包客户端 (中文)](/walletcn)
+[如何使用V钱包客户端 (中文)](https://vsys.readthedocs.io/en/latest/walletcn.html)
 
 Use V Wallet: [http://wallet.v.systems](http://wallet.v.systems)
 

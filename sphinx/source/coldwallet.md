@@ -1,7 +1,7 @@
 
 How to Use V-cold-wallet
 ---
-[如何使用V冷钱包 (中文)](/coldwalletcn)
+[如何使用V冷钱包 (中文)](https://vsys.readthedocs.io/en/latest/coldwalletcn.html)
 
 
 ### 1. Introduction

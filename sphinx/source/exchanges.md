@@ -2,7 +2,7 @@ Instructions for Exchanges
 ---
 The purpose of this document is to describe how to interface your exchange with the V Systems (VSYS) blockchain step-by-step.
 
-交易所对接指南(中文版)点击[这里](/exchangescn)
+交易所对接指南(中文版)点击[这里](https://vsys.readthedocs.io/en/latest/exchangescn.html)
 ### Preparation
 
 ### Hardware
@@ -518,4 +518,4 @@ Some common id of transaction types:
 ```
 
 ### FAQ
-* [Exchange Integration FAQ](/FAQ)
+* [Exchange Integration FAQ](https://vsys.readthedocs.io/en/latest/FAQ.html)

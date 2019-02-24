@@ -24,7 +24,7 @@
 
 
 ### Mainnet Installation and Configuration
-* [How to Install V Systems Mainnet Node](/mainnet.md)
+* How to Install V Systems Mainnet Node :ref:`testnet`.
 * [V Systems Mainnet Node Configuration File](/mainconf)
 
 
