@@ -1,5 +1,5 @@
 ---
-### Exchanges Related Documents
+Exchange Connection Guide
 ---
 
 * [Instructions for Exchanges](https://vsys.readthedocs.io/en/latest/exchanges.html)
