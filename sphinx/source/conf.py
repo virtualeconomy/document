@@ -19,7 +19,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = u'System Document'
+project = u'V System Document'
 copyright = u'2019, ttt'
 author = u'ttt'
 
