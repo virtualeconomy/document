@@ -9,5 +9,10 @@ Introductions
    :maxdepth: 2
 
    Full.rst
-
-
+   Fullcn.rst
+   Short.rst
+   Shortcn.rst
+   Onepager.rst
+   coin.rst
+   coincn.rst
+   tech.rst

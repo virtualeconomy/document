@@ -14,6 +14,6 @@ Document
    Exchange Connection Guide.md
    Technology Tools.md
    Useful Resources.md
-   Frequently Asked Questions.md
+   Frequently.md
 
 

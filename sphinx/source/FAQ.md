@@ -1,5 +1,5 @@
 
-FAQ
+Frequently Asked Questions
 ---
 # Full Node related question
 #### 1. My full node program is crashed. How to make the node stable?

@@ -20,7 +20,7 @@
 # -- Project information -----------------------------------------------------
 
 project = u'V System Document'
-copyright = u'2019, ttt'
+copyright = u'2019, V Systems community. Revision 0x000001'
 author = u'ttt'
 
 # The short X.Y version
