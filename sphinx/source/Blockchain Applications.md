@@ -20,6 +20,7 @@ Blockchain Applications
 
 ### Supernodes Deployment
 * [How to Deploy Supernodes in V Systems Blockchain](https://vsys.readthedocs.io/en/latest/supernode.html)
+* [如何在V Systems中部署超级节点](https://vsys.readthedocs.io/en/latest/supernodecn.html)
 
 
 ### V Web Wallet

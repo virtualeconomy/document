@@ -1,5 +1,5 @@
 ---
-SuperNOdes Deployment
+SuperNodes Deployment
 ---
 # Introduction
 In V Systems, only supernodes have the right to minting blocks and getting V coin rewards. In this wiki we will give you details on deploying a supernode. Additionally, a few recommendations are provided to increase security of the blockchain and the safety of your coins.
@@ -362,7 +362,7 @@ For security reason, we suggest the supernode modify firewall rule and **not ope
 
 ### Supernode Maintains
 
-After Contend, you should also startup a backup server. The config of backup server is the same as supernode but wallet data file is different (wallet data file is located at `<block & wallet data file path>/wallet/wallet.dat`). Keep backup server sync the blocks. When you want to switch the server, just switch wallet data file and restart node.
+After Contend, you should also startup a backup server so that when your supernode server is down, you can switch to backup server as soon as possible. The config of backup server is the same as supernode but wallet data file is different (wallet data file is located at `<block & wallet data file path>/wallet/wallet.dat`). Keep backup server sync the blocks. When you want to switch the server, just switch wallet data file and restart node.
 
 ### Pay Interest to Leaser
 
