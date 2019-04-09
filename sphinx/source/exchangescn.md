@@ -4,15 +4,15 @@
 
 For English version Instructions for Exchanges, please click [here](https://vsys.readthedocs.io/en/latest/exchanges.html)
 
-### 准备工作
+# 准备工作
 
-### 硬件需求
+## 硬件需求
 
-目前阶段，标准硬件配置是2核CPU，16G内存，和1TB高速硬盘的独立主机。
+目前阶段，标准硬件配置是2核CPU，16G内存，和512GB高速硬盘的独立主机。
 
 推荐配置是i3 large型号的亚马逊云主机（AWS）
 
-### 软件需求
+## 软件需求
 
 ### 操作系统
 
@@ -61,7 +61,7 @@ $ sudo apt-get install unzip
 $ sudo apt-get install git-core
 ```
 
-### 启动V全节点
+## 启动V全节点
 
 ### 第一步: 准备程序
 
@@ -94,7 +94,7 @@ $ sbt packageAll
 
 ```shell
 $ mkdir ../vsys-node
-$ cp target/vsys-all-*.jar ../vsys-node/
+$ cp target/vsys-all-*.jar ../vsys-node/v-systems.jar
 $ cd ../vsys-node
 ```
 
@@ -103,7 +103,7 @@ $ cd ../vsys-node
 
 如果您不想编译源代码，您也可以选择在 https://github.com/virtualeconomy/v-systems/releases 下载最新的JAR文件。
 
-将**vsys-all-[version].jar**保存到您的工作目录。
+将**v-systems-[version].jar**保存到您的工作目录。
 
 ### 第二步: 配置
 
@@ -122,9 +122,12 @@ vsys {
     black-list-residence-time = 30s
     peers-broadcast-interval = 5s
     connection-timeout = 30s
-    # Network address
+    # Network address to bind to
+    bind-address = "0.0.0.0"
     # Node name to send during handshake. Comment this string out to set random node name.
     # node-name = "My MAINNET node"
+    # String with IP address and port to send as external address during handshake. Could be set automatically if uPnP is enabled.
+    declared-address = "localhost:9921"
   }
   # Wallet settings
   wallet {
@@ -152,6 +155,8 @@ vsys {
   rest-api {
     # Enable/disable node's REST API
     enable = yes
+    # Network address to bind to
+    bind-address = "0.0.0.0"
     # Hash of API key string
     api-key-hash = "Fo8fR7J1gB3k2WoaE6gYKMwgWfoh9EtZtXAMBxYYCJWG"
   }
@@ -159,7 +164,7 @@ vsys {
 }
 ```
 #### 几个比较关键的配置
-* **directory**应该设为您自己的工作目录
+* **directory**应该设为您自己的工作目录。我们建您挂载一个较大的硬盘，然后工作目录设置到这个硬盘下。
 
 * **known-peers** 这项最好填3个或以上的已知节点。您可以在V explorer查询这些已知节点。现在正在运行的一些节点有：
 
@@ -167,7 +172,7 @@ vsys {
 	# 测试网
 	known-peers = ["18.179.34.202:9923", "13.250.53.12:9923", "18.188.219.229:9923"]
 	# 主网 (欲知更多节点请和我们联系)
-	known-peers = ["54.147.255.148:9921"]
+	known-peers = ["13.55.174.115:9921","52.30.23.41:9921","13.113.98.91:9921","3.121.94.10:9921", "54.147.255.148:9921"]
 	```
 
 * **blockchain.type** 应该填 TESTNET 或 MAINNET.
@@ -175,7 +180,7 @@ vsys {
 * 为安全起见，**api-key-hash**这项最好设置成您自己的哈希值。您可以通过这个命令算出您的api密钥的哈希值：
 
 	```
-	curl -X POST -d '<输入任意字符作为您的api密钥>' 'https://wallettestnet.vee.tech/api/utils/hash/secure'
+	curl -X POST -d '<输入任意字符作为您的api密钥>' 'https://test.v.systems/api/utils/hash/secure'
 	```
 
 * 最后，我们命名并保存配置文件，例如命名为"vsys.conf"。
@@ -186,7 +191,7 @@ vsys {
 
 ```shell
 $ screen -S vsys-node
-$ sudo java -jar vsys*.jar vsys.conf
+$ sudo java -jar v-systems*.jar vsys.conf
 ```
 
 如果需要退出screen，可以在键盘上按 `Ctrl + A + D`。
@@ -197,7 +202,7 @@ $ sudo java -jar vsys*.jar vsys.conf
 $ screen -x vsys-node
 ```
 
-### 全节点接口（API）操作
+## 全节点接口（API）操作
 
 安全提醒：所有的全节点都提供RESTful API进行交互，RESTful API会用到9922端口。安全起见，我们建议交易所修改防火墙规则，**不要将9922端口开放到公网**，仅内网使用。
 
@@ -521,5 +526,11 @@ $ curl -X GET 'http://<节点ip>:9922/transactions/address/ATt6P4vSpBvBTHdV5V9PJ
 5 = 挖矿交易
 ```
 
-### 常见问题
+## 常见问题
 * [Exchange Integration FAQ](https://vsys.readthedocs.io/en/latest/FAQ.html)
+
+## 密钥及钱包生成工具
+
+* [wallet-generator](https://github.com/virtualeconomy/v-wallet-generator) (Scala)
+* [VSYS_HDkey_java](https://github.com/virtualeconomy/VSYS_HDkey_java) (Java)
+* [VSYS_HDkey_go](https://github.com/virtualeconomy/VSYS_HDkey_go) (Go)

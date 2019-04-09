@@ -3,15 +3,16 @@ Instructions for Exchanges
 The purpose of this document is to describe how to interface your exchange with the V Systems (VSYS) blockchain step-by-step.
 
 交易所对接指南(中文版)点击[这里](https://vsys.readthedocs.io/en/latest/exchangescn.html)
-### Preparation
 
-### Hardware
+# Preparation
 
-In current stage, the standard hardware requirement is VPS with 2 CPU, 16GB of RAM and 1TB HHD.
+## Hardware
+
+In current stage, the standard hardware requirement is VPS with 2 CPU, 16GB of RAM and 512GB HDD.
 
 The recommend requirement is Amazon Web Services (AWS) i3 large.
 
-### Software
+## Software
 
 ### Operating System
 
@@ -60,7 +61,7 @@ $ sudo apt-get install unzip
 $ sudo apt-get install git-core
 ```
 
-### Start V Systems full node
+## Start V Systems full node
 
 ### Step 1: Prepare
 
@@ -93,16 +94,16 @@ The compiled JAR file will be located at **target/vsys-all-[version].jar**. Copy
 
 ```shell
 $ mkdir ../vsys-node
-$ cp target/vsys-all-*.jar ../vsys-node/
+$ cp target/vsys-all-*.jar ../vsys-node/v-systems.jar
 $ cd ../vsys-node
 ```
 
 
 #### Download compiled file (Method 2)
 
-If you do not want to compile souce code, you could download the lastest JAR from [https://github.com/virtualeconomy/v-systems/releases](https://github.com/virtualeconomy/v-systems/releases) as well.
+If you do not want to compile souce code, you could download the lastest JAR from https://github.com/virtualeconomy/v-systems/releases as well.
 
-Choose **vsys-all-[version].jar** and save to your own path as you want.
+Choose **v-systems-[version].jar** and save to your own path as you want.
 
 ### Step 2: Configuration
 
@@ -121,9 +122,12 @@ vsys {
     black-list-residence-time = 30s
     peers-broadcast-interval = 5s
     connection-timeout = 30s
-    # Network address
+    # Network address to bind to
+    bind-address = "0.0.0.0"
     # Node name to send during handshake. Comment this string out to set random node name.
     # node-name = "My MAINNET node"
+    # String with IP address and port to send as external address during handshake. Could be set automatically if uPnP is enabled.
+    declared-address = "localhost:9921"
   }
   # Wallet settings
   wallet {
@@ -151,6 +155,8 @@ vsys {
   rest-api {
     # Enable/disable node's REST API
     enable = yes
+    # Network address to bind to
+    bind-address = "0.0.0.0"
     # Hash of API key string
     api-key-hash = "Fo8fR7J1gB3k2WoaE6gYKMwgWfoh9EtZtXAMBxYYCJWG"
   }
@@ -158,7 +164,7 @@ vsys {
 }
 ```
 #### Some key points of configuration
-* The **directory** should be set to your own path.
+* The **directory** should be set to your own path. We suggest you mount a large disk and set the directory to this disk.
 
 * It is better to choose more than 3 peers to fill the **known-peers** field. You could check known-peers via V explorer. Some known-peers for current reference:
 
@@ -166,7 +172,7 @@ vsys {
 	# For TestNet
 	known-peers = ["18.179.34.202:9923", "13.250.53.12:9923", "18.188.219.229:9923"]
 	# For MainNet (contact us to get more known peers)
-	known-peers = ["54.147.255.148:9921"]
+	known-peers = ["13.55.174.115:9921","52.30.23.41:9921","13.113.98.91:9921","3.121.94.10:9921", "54.147.255.148:9921"]
 	```
 
 * The **blockchain.type** should be filled with TESTNET or MAINNET.
@@ -174,7 +180,7 @@ vsys {
 * For security reason, it is better to set you own **api-key-hash**. You could check the hash by this command
 
 	```
-	curl -X POST -d '<input your api key>' 'https://wallettestnet.vee.tech/api/utils/hash/secure'
+	curl -X POST -d '<input your api key>' 'https://test.v.systems/api/utils/hash/secure'
 	```
 
 * Finnaly, we save the file, for example name it as "vsys.conf".
@@ -183,7 +189,7 @@ vsys {
 
 ```shell
 $ screen -S vsys-node
-$ sudo java -jar vsys*.jar vsys.conf
+$ sudo java -jar v-systems*.jar vsys.conf
 ```
 
 Detach your screen by `Ctrl + A + D` .
@@ -194,7 +200,7 @@ To inspect the screen
 $ screen -x vsys-node
 ```
 
-### Full Node API Operation
+## Full Node API Operation
 
 Security warning: Every full node provides RESTful API for interaction with chain. The RESTful API service will use port 9922. For security reason, we suggest the exchange modify firewall rule and **not open 9922 in public network**, only for internal network using. 
 
@@ -517,5 +523,11 @@ Some common id of transaction types:
 5 = Minting transaction
 ```
 
-### FAQ
+## FAQ
 * [Exchange Integration FAQ](https://vsys.readthedocs.io/en/latest/FAQ.html)
+
+## Tools for keys and wallet generation
+
+* [wallet-generator](https://github.com/virtualeconomy/v-wallet-generator) (Scala)
+* [VSYS_HDkey_java](https://github.com/virtualeconomy/VSYS_HDkey_java) (Java)
+* [VSYS_HDkey_go](https://github.com/virtualeconomy/VSYS_HDkey_go) (Go)
