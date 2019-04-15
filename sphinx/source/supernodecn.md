@@ -8,13 +8,15 @@
 
 ## 提交表格
 
-所有的超级节点信息可以在 https://vsysrate.com 里查到。想要成为超级节点，您需要提交这个[申请表](https://goo.gl/forms/CVFsD4RpcaGreZtE2) 声明您的超级节点名称，图标等等 
+所有的超级节点信息可以在 https://vsysrate.com 里查到。想要成为超级节点，您需要提交这个[申请表](https://goo.gl/forms/CVFsD4RpcaGreZtE2) **声明**您的超级节点名称，图标等等 
 
 ## 超级节点硬件要求
 
-目前阶段，标准硬件配置是2核CPU，16G内存，和512GB高速硬盘的独立主机。
+目前阶段，系统配置是**最小16G内存，直存固态硬盘和10Gbps带宽**。
 
-推荐配置是i3 large型号的亚马逊云主机（AWS）
+与之相匹配的是i3 large型号的亚马逊云主机（AWS）。
+
+我们强烈建议每一台超级节点都对应配置一台同样型号的备份服务器。
 
 ## 超级节点软件要求
 
@@ -117,7 +119,7 @@ $ cd ../vsys-node
 # V Systems node settings
 vsys {
   # Path Settings
-  directory = <block data folder path>
+  directory = <block & wallet data file path>
   # Application logging level. Could be DEBUG | INFO | WARN | ERROR. Default value is INFO.
   logging-level = INFO
   # P2P Network settings
@@ -182,6 +184,8 @@ vsys {
 
 * **blockchain.type** 应该填 TESTNET 或 MAINNET.
 
+* **miner**中的**enable**是控制节点铸币的，主服务器请设为`yes`，备份服务器请保持`no`
+
 * 为确保铸币安全，我们建议**reward-address**配置填为您的冷钱包地址。您可以在这里下载V冷钱包 https://v.systems/wallet.html 或者通过这个程序生成您的冷钱包地址 [wallet generator](https://github.com/virtualeconomy/v-wallet-generator)
 
 * 为安全起见，**api-key-hash**这项最好设置成您自己的哈希值。您可以通过这个命令算出您的api密钥的哈希值：
@@ -209,6 +213,21 @@ $ sudo java -jar v-systems*.jar vsys.conf
 $ screen -x vsys-node
 ```
 
+# 超级节点竞选条件
+
+在介绍竞选条件之前，先说明几个余额概念：
+
+* 您钱包当前所持有币的余额，叫做`regular`余额。
+* 可用余额（`available`）则为持有余额减去租出金额的余额（可用余额 = 持有余额 - 租出金额）。
+* 有效余额（`effective`）则为持有余额减去租出金额加上租入金额（有效余额 = 持有余额 - 租出金额 + 租入金额）。
+* `Minting Average Balance` (MAB)值是SPoS特有的一个概念。MAB值的计算和币龄有关，当一些币被交易或者租赁到另一个新地址，这些币的币龄将会从0开始计算，随着新的区块生成而开始增长。当经历完86400个区块后，这些币的币龄到满。也就是说，按照目前15个超级节点出块的情况来计算，钱包地址MAB值大概要经历4天时间才能达到最大。
+
+**（重点）普通节点想竞选超级节点成功需要符合以下条件：**
+
+* 可用余额（`available`）>= 50000个V币 (手续费)
+* 竞选时，有效余额（`effective`）>= 1百万个V币 (超级节点有效余额的最低门槛)
+* 您的MAB值（`mintingAverage`）> 竞选目标节点的MAB值
+
 # 募集资金增加MAB
 
 当节点程序启动后，您可以通过API了解目前节点的状况（您可以打开浏览器输入地址`http://<全节点ip>:9922`打开Swagger客户端查看所有API）。
@@ -229,7 +248,7 @@ $ curl -X GET 'http://<node ip>:9922/addresses'
 ]
 ```
 
-**您需要把您的节点钱包地址告知给您的超级节点支持者并让他们把币租赁到节点钱包地址上**， 这些租赁的币将会增加节点地址的`Minting Average Balance` (MAB)值。这个MAB值的计算和币龄有关，当一些币被交易或者租赁到另一个新地址，这些币的币龄将会从0开始计算，随着新的区块生成而开始增长。当经历完86400个区块后，这些币的币龄到满。也就是说，按照目前15个超级节点出块的情况来计算，钱包地址MAB值大概要经历4天时间才能达到最大。
+**您需要把您的节点钱包地址告知给您的超级节点支持者并让他们把币租赁到节点钱包地址上**，这些租赁的币将会增加节点地址的MAB，大概经历4天时间达到最大。
 
 ### 第2步：查询节点地址余额
 
@@ -239,7 +258,7 @@ $ curl -X GET 'http://<node ip>:9922/addresses'
 $ curl -X GET 'http://<node ip>:9922/addresses/balance/details/ATy98tPdobDBKA35n5CJed6u3AmxKLT3TTV'
 ```
 
-如果成功将返回类似结果:
+如果成功将返回类似结果: 
 
 ```
 {
@@ -251,14 +270,7 @@ $ curl -X GET 'http://<node ip>:9922/addresses/balance/details/ATy98tPdobDBKA35n
 	'height': 643936
 }
 ```
-
 (100000000 = 1个V币)
-
-普通节点想竞选超级节点成功需要符合以下条件：
-
-* 可用余额（`available`）>= 50000个V币 (手续费)
-* 竞选时，有效余额（`effective`）>= 1百万个V币 (超级节点有效余额的最低门槛)
-* 您的MAB值（`mintingAverage`）> 竞选目标节点的MAB值
 
 ### 第3步：查询竞选目标节点的MAB值
 
@@ -363,11 +375,11 @@ $ curl -X GET 'http://<node ip>:9922/consensus/slotInfo/<slot id>'
 
 ### 安全问题
 
-为确保铸币安全，我们建议您的超级节点服务器设置防火墙规则，不要将9922端口开放到公网，仅内网使用。如果您需要在公网使用Swagger客户端查询链上信息，您可以另起一个全节点，然后开放9922端口。
+为确保铸币安全，我们建议您的超级节点服务器设置防火墙规则，不要将9922端口开放到公网，仅内网使用。如果您需要在公网使用Swagger客户端查询链上信息，您可以另起一个全节点，然后开放9922端口。建议打开9921端口，可以使得节点之间通讯更为发达和通畅，降低掉块率。
 
 ### 超级节点的维护
 
-竞选成为超级节点后，为保证铸币一直运行，您应该建立另一台服务器做为备份服务器，当主服务器发生故障的时候可以马上切换服务器恢复铸币。备份服务器和主服务器的配置是一样的，除了钱包文件不一样（钱包文件的位置在 `<block & wallet data file path>/wallet/wallet.dat`）。备份服务器要保持运行，保持区块同步，需要切换的的时候，将钱包文件切换成主服务器的钱包文件然后重启节点程序即可。
+竞选成为超级节点后，为保证铸币一直运行，您应该建立另一台服务器做为备份服务器，当主服务器发生故障的时候可以马上切换服务器恢复铸币。备份服务器和主服务器相互切换可以通过修改配置文件中miner的enable项，或者切换钱包文件（钱包文件的位置在 `<block & wallet data file path>/wallet/wallet.dat`）。备份服务器要保持运行，保持区块同步，需要切换的的时候，切换配置文件或者钱包文件然后重启节点程序即可。强烈建议写一个自动化监控切换程序，一旦发现reward address得不到收益或者超级节点高度不增加的时候，自动切换配置文件或者钱包文件并重启节点程序。
 
 ### 定期分息
 
