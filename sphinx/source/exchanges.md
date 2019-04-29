@@ -202,7 +202,7 @@ $ screen -x vsys-node
 
 ## Full Node API Operation
 
-Security warning: Every full node provides RESTful API for interaction with chain. The RESTful API service will use port 9922. For security reason, we suggest the exchange modify firewall rule and **not open 9922 in public network**, only for internal network using. 
+Security warning: Every full node provides RESTful API for interaction with chain. The RESTful API service will use port 9922. For security reason, we suggest the exchange modify firewall rule and **not open 9922 in public network**, only for internal network using. To make communication among the nodes easy and smooth, please keep port 9921 (mainnet) and 9923 (testnet) opening in public.
 
 You could use the following method to call APIs.
 
@@ -523,11 +523,75 @@ Some common id of transaction types:
 5 = Minting transaction
 ```
 
+### Cold Wallet Payment Signature
+
+To make sure asset is safty, the exchange collects coins from hot wallet and stores these coins in cold wallet. When user widthdraw coins, the exchange transfer out to user from cold wallet. To transfer out the coins from cold wallet, the key point is generating the payment signature. The steps can refer the `send_payment(...)` method of [account.py](https://github.com/virtualeconomy/pyvsystems/blob/master/account.py) in [pyvsystems](https://github.com/virtualeconomy/pyvsystems).
+
+And you can write your own program to generate payment signature as well. 
+For example, if you want to send a payment which JSON format like this:
+
+```
+{
+  "amount": 1000000000,
+  "fee": 10000000,
+  "feeScale": 100,
+  "timestamp": 1547722056762119200,
+  "recipient": "AU6GsBinGPqW8zUuvmjgwpBNLfyyTU3p83Q",
+  "senderPublicKey": "B2Khd89jtnpuzGdnyGRcnKycZMBCo6PsotFcWWi1wMDV",
+  "attachment": "HXRC"
+}
+```
+
+Translate these fields into bytes:
+
+```
+type_id: 02
+timestamp: 15 7a 9d 02 ac 57 d4 00
+amount: 00 00 00 00 3b 9a ca 00
+tx_fee: 00 00 00 00 00 98 96 80
+fee_scale: 00 64
+recipient: 05 54 9c 6d f7 b3 76 77 1b 19 ff 3b db 58 d0 4b 49 99 91 66 3c 47 44 4e 42 5f
+length of attachment: 00 03
+attachment: 31 32 33
+
+```
+
+And then combine togather:
+
+```
+02 15 7a 9d 02 ac 57 d4 00 00 00 00 00 3b 9a ca 00 00 00 00 00 00 98 96 80 00 64 05 54 9c 6d f7 b3 76 77 1b 19 ff 3b db 58 d0 4b 49 99 91 66 3c 47 44 4e 42 5f 00 03 31 32 33
+```
+
+Finally, we used ed25519 of [curve25519 library](https://github.com/tgalal/python-axolotl-curve25519) to signature. 
+
+```
+(For reference only. The signature will be different if generate again)
+72 74 61 73 6d 50 31 4c 63 48 79 5a 63 71 35 36 67 52 34 78 57 45 35 78 68 54 78 59 35 33 6f 6f 6f 4d 32 53 61 36 63 75 42 52 61 78 72 71 33 39 63 54 56 6b 39 4d 67 4d 76 6e 38 61 5a 45 6d 4e 78 6b 56 39 55 39 63 62 41 6a 43 50 4d 68 48 46 6f 51 33 57 69 66 57
+```
+
+And then encode with base58 and put in `signature` field. 
+
+```
+{
+  "amount": 1000000000,
+  "fee": 10000000,
+  "feeScale": 100,
+  "timestamp": 1547722056762119200,
+  "recipient": "AU6GsBinGPqW8zUuvmjgwpBNLfyyTU3p83Q",
+  "senderPublicKey": "B2Khd89jtnpuzGdnyGRcnKycZMBCo6PsotFcWWi1wMDV",
+  "attachment": "HXRC",
+  "signature": "rtasmP1LcHyZcq56gR4xWE5xhTxY53oooM2Sa6cuBRaxrq39cTVk9MgMvn8aZEmNxkV9U9cbAjCPMhHFoQ3WifW"
+}
+```
+
+Pass this JSON to full node. And full node broadcasts to network with API `/vsys/broadcast/payment`.
+
+
 ## FAQ
 * [Exchange Integration FAQ](https://vsys.readthedocs.io/en/latest/FAQ.html)
 
 ## Tools for keys and wallet generation
 
-* [wallet-generator](https://github.com/virtualeconomy/v-wallet-generator) (Scala)
-* [VSYS_HDkey_java](https://github.com/virtualeconomy/VSYS_HDkey_java) (Java)
-* [VSYS_HDkey_go](https://github.com/virtualeconomy/VSYS_HDkey_go) (Go)
+* [Wallet Generator](https://github.com/virtualeconomy/v-wallet-generator) (Scala)
+* [VSYS HDkey](https://github.com/virtualeconomy/VSYS_HDkey_java) (Java)
+* [VSYS HDkey](https://github.com/virtualeconomy/VSYS_HDkey_go) (Go)
