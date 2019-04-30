@@ -204,7 +204,7 @@ $ screen -x vsys-node
 
 ## 全节点接口（API）操作
 
-安全提醒：所有的全节点都提供RESTful API进行交互，RESTful API会用到9922端口。安全起见，我们建议交易所修改防火墙规则，**不要将9922端口开放到公网**，仅内网使用。
+安全提醒：所有的全节点都提供RESTful API进行交互，RESTful API会用到9922端口。安全起见，我们建议交易所修改防火墙规则，**不要将9922端口开放到公网**，仅内网使用。建议开放9921端口(mainnet)和9923端口(testnet)到公网，可以使得节点之间通讯更为发达和通畅。
 
 以下是调用API的几种方法。
 
@@ -526,11 +526,75 @@ $ curl -X GET 'http://<节点ip>:9922/transactions/address/ATt6P4vSpBvBTHdV5V9PJ
 5 = 挖矿交易
 ```
 
+### 冷钱包支付签名
+
+为了资产安全，一般交易所会把用户账号上的热钱包的币转移到冷钱包存储，当用户提币的时候再把冷钱包的提出来给用户。冷钱包发起交易的关键技术点在于如何生成签名，生成签名的方法可以参考[pyvsystems](https://github.com/virtualeconomy/pyvsystems)里[account.py](https://github.com/virtualeconomy/pyvsystems/blob/master/account.py)的`send_payment(...)`方法。
+
+当然，您也可以编写自己的程序生成冷钱包签名，我们一步一步解析生成签名的步骤。
+
+例如，我们希望冷钱包发起如下JSON参数的交易：
+
+```
+{
+  "amount": 1000000000,
+  "fee": 10000000,
+  "feeScale": 100,
+  "timestamp": 1547722056762119200,
+  "recipient": "AU6GsBinGPqW8zUuvmjgwpBNLfyyTU3p83Q",
+  "senderPublicKey": "B2Khd89jtnpuzGdnyGRcnKycZMBCo6PsotFcWWi1wMDV",
+  "attachment": "HXRC"
+}
+```
+
+把这些参数项按如下顺序转化成Bytes：
+
+```
+type_id: 02
+timestamp: 15 7a 9d 02 ac 57 d4 00
+amount: 00 00 00 00 3b 9a ca 00
+tx_fee: 00 00 00 00 00 98 96 80
+fee_scale: 00 64
+recipient: 05 54 9c 6d f7 b3 76 77 1b 19 ff 3b db 58 d0 4b 49 99 91 66 3c 47 44 4e 42 5f
+length of attachment: 00 03
+attachment: 31 32 33
+
+```
+
+然后拼接起来：
+
+```
+02 15 7a 9d 02 ac 57 d4 00 00 00 00 00 3b 9a ca 00 00 00 00 00 00 98 96 80 00 64 05 54 9c 6d f7 b3 76 77 1b 19 ff 3b db 58 d0 4b 49 99 91 66 3c 47 44 4e 42 5f 00 03 31 32 33
+```
+
+最终，我们用冷钱包私钥通过[curve25519](https://github.com/tgalal/python-axolotl-curve25519)的ed25519方法来完成签名。
+
+```
+(For reference only. The signature will be different if generate again)
+72 74 61 73 6d 50 31 4c 63 48 79 5a 63 71 35 36 67 52 34 78 57 45 35 78 68 54 78 59 35 33 6f 6f 6f 4d 32 53 61 36 63 75 42 52 61 78 72 71 33 39 63 54 56 6b 39 4d 67 4d 76 6e 38 61 5a 45 6d 4e 78 6b 56 39 55 39 63 62 41 6a 43 50 4d 68 48 46 6f 51 33 57 69 66 57
+```
+
+把得到的签名用base58编码，然后放到JSON的`signature`项。
+
+```
+{
+  "amount": 1000000000,
+  "fee": 10000000,
+  "feeScale": 100,
+  "timestamp": 1547722056762119200,
+  "recipient": "AU6GsBinGPqW8zUuvmjgwpBNLfyyTU3p83Q",
+  "senderPublicKey": "B2Khd89jtnpuzGdnyGRcnKycZMBCo6PsotFcWWi1wMDV",
+  "attachment": "HXRC",
+  "signature": "rtasmP1LcHyZcq56gR4xWE5xhTxY53oooM2Sa6cuBRaxrq39cTVk9MgMvn8aZEmNxkV9U9cbAjCPMhHFoQ3WifW"
+}
+```
+
+将这个JSON传递给全节点，然后全节点用API`/vsys/broadcast/payment`广播到网络上。
+
 ## 常见问题
 * [Exchange Integration FAQ](https://vsys.readthedocs.io/en/latest/FAQ.html)
 
 ## 密钥及钱包生成工具
 
-* [wallet-generator](https://github.com/virtualeconomy/v-wallet-generator) (Scala)
-* [VSYS_HDkey_java](https://github.com/virtualeconomy/VSYS_HDkey_java) (Java)
-* [VSYS_HDkey_go](https://github.com/virtualeconomy/VSYS_HDkey_go) (Go)
+* [Wallet Generator](https://github.com/virtualeconomy/v-wallet-generator) (Scala)
+* [VSYS HDkey](https://github.com/virtualeconomy/VSYS_HDkey_java) (Java)
+* [VSYS HDkey](https://github.com/virtualeconomy/VSYS_HDkey_go) (Go)
