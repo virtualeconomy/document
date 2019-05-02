@@ -5,6 +5,8 @@ How to use V-Wallet
 
 Use V Wallet: [http://wallet.v.systems](http://wallet.v.systems)
 
+Demo video on youtube: [Manual of V SYSTEMS Wallet](https://www.youtube.com/watch?v=8-6cHHKwcJs&t=135s)
+
 ### 1. Introduction
 
 Our wallet includes basic sending and receiving function, leasing, multi-address, and cold wallet as features.

@@ -1,7 +1,12 @@
 
 如何使用V钱包客户端
 ---
+[How to use V Wallet (English)](https://vsys.readthedocs.io/en/latest/wallet.html)
+
 使用V钱包: [http://wallet.v.systems](http://wallet.v.systems)
+
+Youtube上的演示视频: [Manual of V SYSTEMS Wallet](https://www.youtube.com/watch?v=8-6cHHKwcJs&t=135s)
+
 ### 1.简介
 我们的钱包功能包括基本的发送与接收、租赁与取消租赁，另外还支持多地址账户，并可以监控冷钱包以及使用冷钱包进行交易。
 
