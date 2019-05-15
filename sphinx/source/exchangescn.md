@@ -113,7 +113,9 @@ $ cd ../vsys-node
 # V Systems node settings
 vsys {
   # Path Settings
-  directory = <block data folder path>
+  directory = <system data & wallet data folder path>
+  data-directory = <block data folder path>
+
   # Application logging level. Could be DEBUG | INFO | WARN | ERROR. Default value is INFO.
   logging-level = INFO
   # P2P Network settings
@@ -164,7 +166,7 @@ vsys {
 }
 ```
 #### 几个比较关键的配置
-* **directory**应该设为您自己的工作目录。我们建您挂载一个较大的硬盘，然后工作目录设置到这个硬盘下。
+* **directory**和**data-directory**应该设为您自己的工作目录。我们建您挂载一个较大的硬盘，然后**data-directory**目录设置到这个硬盘下。
 
 * **known-peers** 这项最好填3个或以上的已知节点。您可以在V explorer查询这些已知节点。现在正在运行的一些节点有：
 
@@ -595,6 +597,9 @@ attachment: 31 32 33
 
 ## 密钥及钱包生成工具
 
-* [Wallet Generator](https://github.com/virtualeconomy/v-wallet-generator) (Scala)
-* [VSYS HDkey](https://github.com/virtualeconomy/VSYS_HDkey_java) (Java)
-* [VSYS HDkey](https://github.com/virtualeconomy/VSYS_HDkey_go) (Go)
+(如果使用BIP44生成钱包, 请设置coin_type=360)
+
+* [Wallet Generator](https://github.com/virtualeconomy/v-wallet-generator) (Scala版本, 类BIP39生成方式)
+* [VSYS HDkey](https://github.com/virtualeconomy/VSYS_HDkey_java) (Java version版本, 类BIP32生成方式)
+* [VSYS HDkey](https://github.com/virtualeconomy/VSYS_HDkey_go) (Go version版本, 类BIP32生成方式)
+* [pyvsystems](https://github.com/virtualeconomy/pyvsystems) SDK (Python 版)

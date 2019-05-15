@@ -113,7 +113,9 @@ Set your configuration file.
 # V Systems node settings
 vsys {
   # Path Settings
-  directory = <block data folder path>
+  directory = <system data & wallet data folder path>
+  data-directory = <block data folder path>
+
   # Application logging level. Could be DEBUG | INFO | WARN | ERROR. Default value is INFO.
   logging-level = INFO
   # P2P Network settings
@@ -164,7 +166,7 @@ vsys {
 }
 ```
 #### Some key points of configuration
-* The **directory** should be set to your own path. We suggest you mount a large disk and set the directory to this disk.
+* The **directory** and **data-directory** should be set to your own path. For **data-directory**, we suggest you mount a large disk and set the directory to this disk.
 
 * It is better to choose more than 3 peers to fill the **known-peers** field. You could check known-peers via V explorer. Some known-peers for current reference:
 
@@ -592,6 +594,8 @@ Pass this JSON to full node. And full node broadcasts to network with API `/vsys
 
 ## Tools for keys and wallet generation
 
-* [Wallet Generator](https://github.com/virtualeconomy/v-wallet-generator) (Scala)
-* [VSYS HDkey](https://github.com/virtualeconomy/VSYS_HDkey_java) (Java)
-* [VSYS HDkey](https://github.com/virtualeconomy/VSYS_HDkey_go) (Go)
+(If using BIP44, please set coin_type=360)
+* [Wallet Generator](https://github.com/virtualeconomy/v-wallet-generator) (Scala version, similar to BIP39)
+* [VSYS HDkey](https://github.com/virtualeconomy/VSYS_HDkey_java) (Java version, similar to BIP32)
+* [VSYS HDkey](https://github.com/virtualeconomy/VSYS_HDkey_go) (Go version, similar to BIP32)
+* [pyvsystems](https://github.com/virtualeconomy/pyvsystems) SDK (Python version)

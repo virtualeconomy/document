@@ -119,7 +119,8 @@ Set your configuration file.
 # V Systems node settings
 vsys {
   # Path Settings
-  directory = <block & wallet data file path>
+  directory = <system data & wallet data folder path>
+  data-directory = <block data folder path>
   # Application logging level. Could be DEBUG | INFO | WARN | ERROR. Default value is INFO.
   logging-level = INFO
   # P2P Network settings
@@ -170,7 +171,7 @@ vsys {
 }
 ```
 #### Some key points of configuration
-* The **directory** should be set to your own path. We suggest you mount a large disk and set the directory to this disk.
+* The **directory** and **data-directory** should be set to your own path. For **data-directory**, we suggest you mount a large disk and set the directory to this disk.
 
 * It is better to choose more than 3 peers to fill the **known-peers** field. You could check known-peers via V explorer. Some known-peers for current reference:
 

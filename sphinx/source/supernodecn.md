@@ -119,7 +119,8 @@ $ cd ../vsys-node
 # V Systems node settings
 vsys {
   # Path Settings
-  directory = <block & wallet data file path>
+  directory = <system data & wallet data folder path>
+  data-directory = <block data folder path>
   # Application logging level. Could be DEBUG | INFO | WARN | ERROR. Default value is INFO.
   logging-level = INFO
   # P2P Network settings
@@ -171,7 +172,7 @@ vsys {
 ```
 #### 几个比较关键的配置
 
-* **directory**应该设为您自己的工作目录。我们建您挂载一个较大的硬盘，然后工作目录设置到这个硬盘下。
+* **directory**和**data-directory**应该设为您自己的工作目录。我们建您挂载一个较大的硬盘，然后**data-directory**目录设置到这个硬盘下。
 
 * **known-peers** 这项最好填3个或以上的已知节点。您可以在V explorer查询这些已知节点。现在正在运行的一些节点有：
 
