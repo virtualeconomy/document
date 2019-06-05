@@ -27,8 +27,8 @@ or compile yourself from virtualeconomy/v-cold-android
 ### 4. Monitor Address Balance on Hot Wallet
 * Have a hot wallet account (not related to a cold wallet and needs to be generated separately)
 * Log in your account on hot wallet 
-[https://wallettestnet.vee.tech](https://wallettestnet.vee.tech)(For Testnet),
-[https://wallet.vee.tech](https://wallet.vee.tech) (For Mainnet)
+[https://test.v.systems](https://test.v.systems)(For Testnet),
+[https://wallet.v.systems](https://wallet.v.systems) (For Mainnet)
 * Click on "monitor cold wallet", your camera would switch on 
 * Choose an address that you want to monitor on your cold wallet, press the QR button, a QR code would show up
 * Scan the QR code with camera of your hot wallet 

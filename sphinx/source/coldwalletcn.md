@@ -20,7 +20,7 @@
 
 ### 4.监控冷钱包的地址余额
 * 拥有一个热钱包账户（与冷钱包无关的账户，需要独立生成）
-* 在热钱包上登录您的帐户 [https://wallettestnet.vee.tech](https://wallettestnet.vee.tech) (测试网)， [https://wallet.vee.tech](https://wallet.vee.tech) (主网)
+* 在热钱包上登录您的帐户 [https://test.v.systems](https://test.v.systems) (测试网)， [https://wallet.v.systems](https://wallet.v.systems) (主网)
 * 点击“监视冷钱包”，你的相机将打开
 * 选择要在冷钱包上监控的地址，按二维码按钮，将显示二维码
 * 用热钱包的相机扫描二维码
