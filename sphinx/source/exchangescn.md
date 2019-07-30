@@ -168,13 +168,13 @@ vsys {
 #### 几个比较关键的配置
 * **directory**和**data-directory**应该设为您自己的工作目录。我们建您挂载一个较大的硬盘，然后**data-directory**目录设置到这个硬盘下。
 
-* **known-peers** 这项最好填3个或以上的已知节点。您可以在V explorer查询这些已知节点。现在正在运行的一些节点有：
+* **known-peers** 这项最好填3个或以上的已知节点。您可以在默认的配置文件里查询这些已知节点（[测试网配置](https://github.com/virtualeconomy/v-systems/blob/master/vsys-testnet.conf)，[主网配置](https://github.com/virtualeconomy/v-systems/blob/master/vsys-mainnet.conf)）。现在正在运行的一些节点有：
 
 	```
 	# 测试网
-	known-peers = ["18.179.34.202:9923", "13.250.53.12:9923", "18.188.219.229:9923"]
+	known-peers = ["54.193.47.112:9923","13.57.25.133:9923","18.218.106.1:9923","3.17.78.253:9923","34.222.191.174:9923"]
 	# 主网 (欲知更多节点请和我们联系)
-	known-peers = ["13.55.174.115:9921","52.30.23.41:9921","13.113.98.91:9921","3.121.94.10:9921", "54.147.255.148:9921"]
+	known-peers = ["13.55.174.115:9921","52.30.23.41:9921","13.113.98.91:9921","3.121.94.10:9921"]
 	```
 
 * **blockchain.type** 应该填 TESTNET 或 MAINNET.
@@ -211,15 +211,23 @@ $ screen -x vsys-node
 以下是调用API的几种方法。
 
 
-### 使用 Python SDK (方法1)
+### 方法1：使用SDK（钱包非托管型接入）
 
-如果您使用python对接，我们强烈建议您使用[pyvsystems](https://github.com/virtualeconomy/pyvsystems)项目完成交互对接。详情请参阅[这里](https://github.com/virtualeconomy/pyvsystems/wiki/PYVSYSTEMS-使用详细指南%28中文%29)。
+我们强烈建议您使用SDK对接链上信息及管理钱包，目前我们提供SDK有如下版本：
 
-### 使用 Swagger (方法2)
+Python版SDK [pyvsystems](https://github.com/virtualeconomy/pyvsystems) 详情请参阅[这里](https://github.com/virtualeconomy/pyvsystems/wiki/PYVSYSTEMS-使用详细指南%28中文%29)。
+
+JavaScript版SDK [js-v-sdk](https://github.com/virtualeconomy/js-v-min-sdk)
+
+Java版SDK [java-v-sdk](https://github.com/virtualeconomy/java-v-sdk)
+
+C#版SDK [cs-v-sdk](https://github.com/virtualeconomy/cs-v-sdk)
+
+Golang版SDK [go-v-sdk](https://github.com/virtualeconomy/go-v-sdk)
+
+### 方法2：使用cURL（钱包托管型接入）
 
 您可以打开浏览器输入```http://<全节点ip>:9922```使用Swagger，在这里也可以查阅所有可以使用的API。
-
-### 使用 cURL (方法3)
 
 #### 第一步: 准备工作
 
@@ -528,6 +536,40 @@ $ curl -X GET 'http://<节点ip>:9922/transactions/address/ATt6P4vSpBvBTHdV5V9PJ
 5 = 挖矿交易
 ```
 
+#### 通过交易ID查询交易记录
+用 HTTP GET 调用 GET /transactions/info/{id} API，例如，
+
+```shell
+$ curl -X GET 'http://<节点ip>:9922/transactions/info/EhmLJA5H5LG8a69eQEpKtbPZf8KGMCSH5w4MPDMoaGR3'
+```
+
+如果成功将返回类似结果:
+
+```
+{
+  "type": 2,
+  "id": "EhmLJA5H5LG8a69eQEpKtbPZf8KGMCSH5w4MPDMoaGR3",
+  "fee": 10000000,
+  "timestamp": 1562339456608000000,
+  "proofs": [
+    {
+      "proofType": "Curve25519",
+      "publicKey": "EaxkrqBySftSD7M9WJiBKxLPjugtjUqDCJK3Lf3aTq1E",
+      "signature": "4zxLLLpBmERW7zwTTyRamrQDgeQPSe2gwFwsUKoVtBvsPjz73n2fHFLBxAyYtJop3yrKs9LFiirNZ5VUDahD4ao7"
+    }
+  ],
+  "recipient": "AU83FKKzTYCue5ZQPweCzJ68dQE4HtdMv5U",
+  "feeScale": 100,
+  "amount": 50000000,
+  "attachment": "",
+  "status": "Success",
+  "feeCharged": 10000000,
+  "height": 5414065
+}
+```
+
+注：如果一笔交易已经从Unconfirmed transaction pool打包到区块中，通过此API可以得到确切的知道该笔交易所在区块高度。当节点同步高度高于该交易的所在高度31个区块之后，可确认该笔交易。
+
 ### 冷钱包支付签名
 
 为了资产安全，一般交易所会把用户账号上的热钱包的币转移到冷钱包存储，当用户提币的时候再把冷钱包的提出来给用户。冷钱包发起交易的关键技术点在于如何生成签名，生成签名的方法可以参考[pyvsystems](https://github.com/virtualeconomy/pyvsystems)里[account.py](https://github.com/virtualeconomy/pyvsystems/blob/master/account.py)的`send_payment(...)`方法。
@@ -552,7 +594,7 @@ $ curl -X GET 'http://<节点ip>:9922/transactions/address/ATt6P4vSpBvBTHdV5V9PJ
 
 ```
 type_id: 02
-timestamp: 15 7a 9d 02 ac 57 d4 00
+timestamp: 15 7a 9d 02 ac 57 d4 20
 amount: 00 00 00 00 3b 9a ca 00
 tx_fee: 00 00 00 00 00 98 96 80
 fee_scale: 00 64
@@ -565,7 +607,7 @@ attachment: 31 32 33
 然后拼接起来：
 
 ```
-02 15 7a 9d 02 ac 57 d4 00 00 00 00 00 3b 9a ca 00 00 00 00 00 00 98 96 80 00 64 05 54 9c 6d f7 b3 76 77 1b 19 ff 3b db 58 d0 4b 49 99 91 66 3c 47 44 4e 42 5f 00 03 31 32 33
+02 15 7a 9d 02 ac 57 d4 20 00 00 00 00 3b 9a ca 00 00 00 00 00 00 98 96 80 00 64 05 54 9c 6d f7 b3 76 77 1b 19 ff 3b db 58 d0 4b 49 99 91 66 3c 47 44 4e 42 5f 00 03 31 32 33
 ```
 
 最终，我们用冷钱包私钥通过[curve25519](https://github.com/tgalal/python-axolotl-curve25519)的ed25519方法来完成签名。
@@ -597,9 +639,9 @@ attachment: 31 32 33
 
 ## 密钥及钱包生成工具
 
-(如果使用BIP44生成钱包, 请设置coin_type=360)
+如果使用BIP44生成钱包, 请设置coin_type=360 (即"44'/360'/[account]'/0/[address index]")
 
 * [Wallet Generator](https://github.com/virtualeconomy/v-wallet-generator) (Scala版本, 类BIP39生成方式)
-* [VSYS HDkey](https://github.com/virtualeconomy/VSYS_HDkey_java) (Java version版本, 类BIP32生成方式)
-* [VSYS HDkey](https://github.com/virtualeconomy/VSYS_HDkey_go) (Go version版本, 类BIP32生成方式)
+* [V HD Key](https://github.com/virtualeconomy/v-hdkey-java) (Java版本, 类BIP32生成方式)
+* [V HD Key](https://github.com/virtualeconomy/v-hdkey-go) (Go版本, 类BIP32生成方式)
 * [pyvsystems](https://github.com/virtualeconomy/pyvsystems) SDK (Python 版)

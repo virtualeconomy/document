@@ -168,13 +168,13 @@ vsys {
 #### Some key points of configuration
 * The **directory** and **data-directory** should be set to your own path. For **data-directory**, we suggest you mount a large disk and set the directory to this disk.
 
-* It is better to choose more than 3 peers to fill the **known-peers** field. You could check known-peers via V explorer. Some known-peers for current reference:
+* It is better to choose more than 3 peers to fill the **known-peers** field. You could check known-peers via default config file ([Testnet Config](https://github.com/virtualeconomy/v-systems/blob/master/vsys-testnet.conf), [Mainnet Config](https://github.com/virtualeconomy/v-systems/blob/master/vsys-mainnet.conf)). Some known-peers for current reference:
 
 	```
 	# For TestNet
-	known-peers = ["18.179.34.202:9923", "13.250.53.12:9923", "18.188.219.229:9923"]
+	known-peers = ["54.193.47.112:9923","13.57.25.133:9923","18.218.106.1:9923","3.17.78.253:9923","34.222.191.174:9923"]
 	# For MainNet (contact us to get more known peers)
-	known-peers = ["13.55.174.115:9921","52.30.23.41:9921","13.113.98.91:9921","3.121.94.10:9921", "54.147.255.148:9921"]
+	known-peers = ["13.55.174.115:9921","52.30.23.41:9921","13.113.98.91:9921","3.121.94.10:9921"]
 	```
 
 * The **blockchain.type** should be filled with TESTNET or MAINNET.
@@ -209,15 +209,23 @@ Security warning: Every full node provides RESTful API for interaction with chai
 You could use the following method to call APIs.
 
 
-### Use Python SDK (Method 1)
+### Method 1: Use SDK integration
 
-If you use python to do integration, we strongly suggest you use [pyvsystems](https://github.com/virtualeconomy/pyvsystems) project. The pyvsystems specification is [here](https://github.com/virtualeconomy/pyvsystems/wiki/PYVSYSTEMS-User-Guide-Specification-%28English%29).
+We strongly suggest you use SDK to do integration. Currently, we provide the following version of SDK:
 
-### Use Swagger (Method 2)
+Python version SDK [pyvsystems](https://github.com/virtualeconomy/pyvsystems). The pyvsystems specification is [here](https://github.com/virtualeconomy/pyvsystems/wiki/PYVSYSTEMS-User-Guide-Specification-%28English%29).
+
+JavaScript version SDK [js-v-sdk](https://github.com/virtualeconomy/js-v-min-sdk)
+
+Java version SDK [java-v-sdk](https://github.com/virtualeconomy/java-v-sdk)
+
+C# version SDK  [cs-v-sdk](https://github.com/virtualeconomy/cs-v-sdk)
+
+Golang version SDK [go-v-sdk](https://github.com/virtualeconomy/go-v-sdk)
+
+### Method 2: Use cURL to call API
 
 You could open ```http://<full node ip>:9922``` in browser to find all APIs you can use.
-
-### Use cURL (Method 3)
 
 #### Step 1: Prepare
 
@@ -525,6 +533,42 @@ Some common id of transaction types:
 5 = Minting transaction
 ```
 
+#### Check transaction by ID
+
+Use HTTP GET to call /transactions/info/{id} API. For example,
+
+ ```shell
+$ curl -X GET 'http://<node ip>:9922/transactions/info/EhmLJA5H5LG8a69eQEpKtbPZf8KGMCSH5w4MPDMoaGR3'
+```
+
+Response:
+
+ ```
+{
+  "type": 2,
+  "id": "EhmLJA5H5LG8a69eQEpKtbPZf8KGMCSH5w4MPDMoaGR3",
+  "fee": 10000000,
+  "timestamp": 1562339456608000000,
+  "proofs": [
+    {
+      "proofType": "Curve25519",
+      "publicKey": "EaxkrqBySftSD7M9WJiBKxLPjugtjUqDCJK3Lf3aTq1E",
+      "signature": "4zxLLLpBmERW7zwTTyRamrQDgeQPSe2gwFwsUKoVtBvsPjz73n2fHFLBxAyYtJop3yrKs9LFiirNZ5VUDahD4ao7"
+    }
+  ],
+  "recipient": "AU83FKKzTYCue5ZQPweCzJ68dQE4HtdMv5U",
+  "feeScale": 100,
+  "amount": 50000000,
+  "attachment": "",
+  "status": "Success",
+  "feeCharged": 10000000,
+  "height": 5414065
+}
+```
+
+PS: If a transaction if packaged into a block from Unconfirmed transaction pool, this API will return the **height** of transaction. We can confirm a transaction if node block height is 31 blocks higher than the height  of transaction. 
+
+
 ### Cold Wallet Payment Signature
 
 To make sure asset is safty, the exchange collects coins from hot wallet and stores these coins in cold wallet. When user widthdraw coins, the exchange transfer out to user from cold wallet. To transfer out the coins from cold wallet, the key point is generating the payment signature. The steps can refer the `send_payment(...)` method of [account.py](https://github.com/virtualeconomy/pyvsystems/blob/master/account.py) in [pyvsystems](https://github.com/virtualeconomy/pyvsystems).
@@ -548,7 +592,7 @@ Translate these fields into bytes:
 
 ```
 type_id: 02
-timestamp: 15 7a 9d 02 ac 57 d4 00
+timestamp: 15 7a 9d 02 ac 57 d4 20
 amount: 00 00 00 00 3b 9a ca 00
 tx_fee: 00 00 00 00 00 98 96 80
 fee_scale: 00 64
@@ -561,7 +605,7 @@ attachment: 31 32 33
 And then combine togather:
 
 ```
-02 15 7a 9d 02 ac 57 d4 00 00 00 00 00 3b 9a ca 00 00 00 00 00 00 98 96 80 00 64 05 54 9c 6d f7 b3 76 77 1b 19 ff 3b db 58 d0 4b 49 99 91 66 3c 47 44 4e 42 5f 00 03 31 32 33
+02 15 7a 9d 02 ac 57 d4 20 00 00 00 00 3b 9a ca 00 00 00 00 00 00 98 96 80 00 64 05 54 9c 6d f7 b3 76 77 1b 19 ff 3b db 58 d0 4b 49 99 91 66 3c 47 44 4e 42 5f 00 03 31 32 33
 ```
 
 Finally, we used ed25519 of [curve25519 library](https://github.com/tgalal/python-axolotl-curve25519) to signature. 
@@ -594,8 +638,8 @@ Pass this JSON to full node. And full node broadcasts to network with API `/vsys
 
 ## Tools for keys and wallet generation
 
-(If using BIP44, please set coin_type=360)
+If using BIP44, please set coin_type=360 ("44'/360'/[account]'/0/[address index]")
 * [Wallet Generator](https://github.com/virtualeconomy/v-wallet-generator) (Scala version, similar to BIP39)
-* [VSYS HDkey](https://github.com/virtualeconomy/VSYS_HDkey_java) (Java version, similar to BIP32)
-* [VSYS HDkey](https://github.com/virtualeconomy/VSYS_HDkey_go) (Go version, similar to BIP32)
+* [V HD Key](https://github.com/virtualeconomy/v-hdkey-java) (Java version, similar to BIP32)
+* [V HD Key](https://github.com/virtualeconomy/v-hdkey-go) (Go version, similar to BIP32)
 * [pyvsystems](https://github.com/virtualeconomy/pyvsystems) SDK (Python version)
