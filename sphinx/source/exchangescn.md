@@ -217,7 +217,7 @@ $ screen -x vsys-node
 
 Python版SDK [pyvsystems](https://github.com/virtualeconomy/pyvsystems) 详情请参阅[这里](https://github.com/virtualeconomy/pyvsystems/wiki/PYVSYSTEMS-使用详细指南%28中文%29)。
 
-JavaScript版SDK [js-v-sdk](https://github.com/virtualeconomy/js-v-min-sdk)
+JavaScript版SDK [js-v-sdk](https://github.com/virtualeconomy/js-v-sdk)
 
 Java版SDK [java-v-sdk](https://github.com/virtualeconomy/java-v-sdk)
 
