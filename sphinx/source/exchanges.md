@@ -1,8 +1,7 @@
-Instructions for Exchanges
+Instructions of Listing VSYS for Exchanges
 ---
-The purpose of this document is to describe how to interface your exchange with the V Systems (VSYS) blockchain step-by-step.
 
-交易所对接指南(中文版)点击[这里](https://vsys.readthedocs.io/en/latest/exchangescn.html)
+The purpose of this document is to describe how to integrate the V Systems (VSYS) blockchain into your exchange step-by-step.
 
 # Preparation
 
@@ -202,7 +201,7 @@ To inspect the screen
 $ screen -x vsys-node
 ```
 
-## Full Node API Operation
+## Full Node API/JSON-RPC Operation
 
 Security warning: Every full node provides RESTful API for interaction with chain. The RESTful API service will use port 9922. For security reason, we suggest the exchange modify firewall rule and **not open 9922 in public network**, only for internal network using. To make communication among the nodes easy and smooth, please keep port 9921 (mainnet) and 9923 (testnet) opening in public.
 
@@ -265,7 +264,7 @@ If wallet is created, you will get address of the wallet in response:
 }
 ```
 
-The created wallets will be stored in ```<block data folder path>/wallet/wallet.dat```. Remember to backup the file in schedule.
+The created wallets will be stored in ```<data path>/wallet/wallet.dat```. Remember to backup the file in schedule.
 And you can recover a wallet from seed as well. To find the seed of wallet, use HTTP GET to call /addresses/seed/{address} with node API key. For example,
 
 ```shell
@@ -366,7 +365,7 @@ In request,
 
 ```amount``` is the payment amount. 100000000 = 1 VSYS.
 
-```fee``` is the transaction fee. The mininum transaction fee is 10000000(0.1 VSYS).
+```fee``` is the transaction fee. Currently it is constant value 10000000(0.1 VSYS).
 
 ```feeScale ``` currently is a fixed value. It should be 100.
 
@@ -531,6 +530,8 @@ Some common id of transaction types:
 3 = Lease transaction
 4 = Cancel lease transaction
 5 = Minting transaction
+8 = Register contract transaction
+9 = Execute contract function transaction
 ```
 
 #### Check transaction by ID

@@ -1,8 +1,6 @@
-交易所对接指南
+交易所上币对接指南
 ---
-这篇文档主要描述了交易所如何一步一步完成和V Systems (VSYS)区块链的对接交互。
-
-For English version Instructions for Exchanges, please click [here](https://vsys.readthedocs.io/en/latest/exchanges.html)
+这篇文档主要描述了交易所如何一步一步完成和V Systems (VSYS)区块链的对接交互，完成充提VSYS的各项操作。
 
 # 准备工作
 
@@ -204,7 +202,7 @@ $ sudo java -jar v-systems*.jar vsys.conf
 $ screen -x vsys-node
 ```
 
-## 全节点接口（API）操作
+## 全节点接口（API/JSON-RPC）操作
 
 安全提醒：所有的全节点都提供RESTful API进行交互，RESTful API会用到9922端口。安全起见，我们建议交易所修改防火墙规则，**不要将9922端口开放到公网**，仅内网使用。建议开放9921端口(mainnet)和9923端口(testnet)到公网，可以使得节点之间通讯更为发达和通畅。
 
@@ -267,7 +265,7 @@ $ curl -X POST --header 'Accept: application/json' --header 'api_key: <节点api
 }
 ```
 
-创建的钱包数据都会保存在```<block data folder path>/wallet/wallet.dat```这个文件里，这个文件最好定期进行备份。
+创建的钱包数据都会保存在```<data path>/wallet/wallet.dat```这个文件里，这个文件最好定期进行备份。
 
 我们也可以根据seed还原钱包，如果查找钱包的seed，可以通过发送HTTP GET调用/addresses/seed/{address} 这个API找到seed（需要带入API密钥），例如
 
@@ -369,7 +367,7 @@ $ curl -X POST --header 'Content-Type: application/json' --header 'Accept: appli
 
 ```amount``` 是支付给对方的费用，100000000 = 1 VSYS。
 
-```fee``` 是交易费，最小交易费10000000 (0.1 VSYS)。
+```fee``` 是交易费，目前是固定交易费10000000 (0.1 VSYS)。
 
 ```feeScale ``` 目前是固定值100。
 
@@ -377,7 +375,7 @@ $ curl -X POST --header 'Content-Type: application/json' --header 'Accept: appli
 
 ```recipient ``` 是接受方的钱包地址。
 
-```attachment ``` 可以说任意字符（最多140个字符），用base58编码填入此项。
+```attachment ``` 可以是任意字符（最多140个字符），用base58编码填入此项。
 
 
 如果成功将返回类似结果:
@@ -533,7 +531,9 @@ $ curl -X GET 'http://<节点ip>:9922/transactions/address/ATt6P4vSpBvBTHdV5V9PJ
 2 = 支付交易
 3 = 租赁交易
 4 = 取消租赁交易
-5 = 挖矿交易
+5 = 铸币交易
+8 = 注册合约交易
+9 = 执行合约函数交易
 ```
 
 #### 通过交易ID查询交易记录
