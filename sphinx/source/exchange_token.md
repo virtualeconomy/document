@@ -170,7 +170,9 @@ If success, you will get response more or less like the following:
 
 In response, `balance` is show as the mininum unity amount. For example, 1234400000 means the user holds 1234.4 Token.
 
-#### Step 4: Send Token
+#### Step 5: Send Token
+
+(Sending Token is a complex progress. We suggest you use SDK to send token)
 
 If user withdraws Token to his/her own wallet, the exchange can call HTTP POST /contract/execute to send Token.
 
@@ -233,7 +235,7 @@ For example, if we want to send 1.5 Token to AU1L8NVL9NTvu4n4XbP3fPJ8b5gQGjRG17W
 And then we calculate the amount in mininum unit and convert to 8 bytes:
 
 ```
-(1.5 * 1000 = 1500)
+(1.5 * 1000 = 1500, convert 1500 to 8 bytes)
 00 00 00 00 00 00 05 dc
 ```
 
@@ -283,43 +285,54 @@ If success, you will get response more or less like the following:
 }
 ```
 
-#### Step 5: Check transaction record
+#### Step 6: Check transaction record
+
+To simplify contract parse on chain, we also provide token transaction query node for exchange to check the token transaction history. Exchange can parse contract by itself as well. For parse instructions, please refer [here](https://github.com/virtualeconomy/v-systems/wiki/Instructions-of-Listing-Token-for-Exchanges/b3a3fbcd7edb3249c9775170e1c280c9a057029e#step-5-check-transaction-record)
+
+##### 1.Get Transaction History by Address
+
+Use HTTP GET /api/token/transactions?tokenId={tokenId}&address={address}&limit={limit}&start={startIndex} API. `start` is optional. In reponse for each query, you will get LastEvaluatedKey, which you can use it as start input value for next paging query. For example,
+
+```shell
+$ curl -X GET 'https://<token transaction query node>/api/token/transactions?tokenId={tokenId}&address={address}&limit={limit}&start={startIndex}
+```
+
+
+##### 2.Get Transaction History by Block Height
+
+Use HTTP GET /api/v1/token/transactions?tokenId={tokenId}&startHeight={from}&endHeight={to}&limit={limit}&start={startIndex} API
+
+```shell
+$ curl -X GET 'http://<token transaction query node>/api/v1/token/transactions?tokenId=TWuETGL96GyQ7KjnTWRJwZiaPhgmvhp76vrNrPbDJ&limit=10&startHeight=6100000&endHeight=6100100'
+```
+
+
+##### 3.Get Transaction by ID
+
+Use HTTP GET /transactions/info/{id} API
+
+```shell
+$ curl -X GET 'https://<token transaction query node>/api/token/transaction/FZcxfa6oD9VumAseRnDx7bUWeMmbs8c4R9TreEhRwNh3'
+```
+
+
+#### Step 7: Check block height
+
+Use HTTP GET /blocks/height API
+
+```shell
+$ curl -X GET 'http://<full node ip>:9922/blocks/height'
+```
+
+Response:
+
+```
+{
+  "height": 6145911
+}
+```
 
 If a transaction if packaged into a block, the API `GET /transactions/info/{id}` will return the **height** of transaction. We can confirm a transaction if node block height is 31 blocks higher than the height of transaction.
-
-**How to Parse functionData to get Recipient and Token Amount:**
-
-For example, we parse functionData of "Send" contract function
-
-```
-function send(Account recipient, Amount amount)
-```
-
-And this is functionData value in transaction that we get on blockchain
-
-```
-14uNyNb5nFsicZ6dELMKjNAHz3PLM3mjiu6pHsbTrgTYYWb5WRy
-```
-
-Decode with Base58, we get
-
-```
-00 02 02 05 54 66 33 43 4d 30 9c 92 cf 07 47 da 4b 40 53 15 22 60 c1 e8 4f 62 05 dd d1 03 00 00 00 00 00 00 05 dc
-```
-
-Address type and amount type are fixed length. Address type is 26. Amount is 8.
-
-```
-00 02 (The num of parameters)
-02 (The type ID of the first parameter)
-05 54 66 33 43 4d 30 9c 92 cf 07 47 da 4b 40 53 15 22 60 c1 e8 4f 62 05 dd d1 (The value of the first parameter)
-03 (The type ID of the second parameter)
-00 00 00 00 00 00 05 dc (The value of the second parameter)
-```
-
-According to the value of the first parameter, we decode it with Base58 and get recipient address AU1L8NVL9NTvu4n4XbP3fPJ8b5gQGjRG17W
-
-According to the value of the second parameter, we covert the 8 bytes to a 64 bit integer 1500. If the token unity is 1000, this transaction indicates the recipient got 1.5 Token.
 
 Some common id of transaction types:
 
@@ -332,175 +345,9 @@ Some common id of transaction types:
 9 = Execute contract function transaction
 ```
 
-##### 1.Get Transaction History by Address
-
-The max limit for query transaction history by address is 10000. So centralized exchange had better store all type 9 transactions (execute contract function transaction) which it is specified contract ID and Function Index is 3 or 4. Because this kind of transaction contains token transfer info. When user checks deposit and withdraw history, exchange can get these transfer records from database without query limit and parsing functionData.
-
-Use HTTP GET /transactions/address/{address}/limit/{limit} API
-
-```shell
-$ curl -X GET 'http://<full node ip>:9922/transactions/address/ATt6P4vSpBvBTHdV5V9PJEHMFp4msJ1fkkX/limit/10'
-```
-
-If success, you will get response more or less like the following:
-
-```
-[
-  [
-     {
-      "type": 9,
-      "id": "FZcxfa6oD9VumAseRnDx7bUWeMmbs8c4R9TreEhRwNh3",
-      "fee": 30000000,
-      "timestamp": 1568346104946082600,
-      "proofs": [
-        {
-          "proofType": "Curve25519",
-          "publicKey": "DREQ2s3dQzaKTsvnmKWTnj59ptM1NzXwmap8jYVdPeLC",
-          "address": "AUCJE7djDBbFrgeKRZ4UMREujAeqnD6L6Ph",
-          "signature": "3NPGPyxWW8PDh1Hc3hubZcRPk3KJBkKsjidTVaFR32Jv1obLfBAxEY5Vq27ZNzfPqcvvi64QtaKcZTXZMxbjXGqx"
-        }
-      ],
-      "contractId": "CF8eRsiyXSP9qnrby9AqgzJGJbjYx9aXkbi",
-      "functionIndex": 4,
-      "functionData": "14uNyNb5nFsicZ6dELMKjNAHz3PLM3mjiu6pHsbTrgTYYWb5WRy",
-      "attachment": "",
-      "feeScale": 100,
-      "status": "Success",
-      "feeCharged": 30000000,
-      "height": 7257386
-    },
-    {
-      "type": 2,
-      "id": "7YXd42MiPyyUfVmvVyV2b3c6uL3FgtrZTRbHe3sWydC8",
-      "fee": 10000000,
-      "timestamp": 1568256953919000000,
-      "proofs": [
-        {
-          "proofType": "Curve25519",
-          "publicKey": "2wMSwLfwoPTt2BpsTZJ6djd2W92BwYR8nkGjBD4aAae3",
-          "address": "AU1L8NVL9NTvu4n4XbP3fPJ8b5gQGjRG17W",
-          "signature": "2Q5i6BRjTTErRqWDmznWdd7JKMQERs329fZ4cqj2KAXbVot9szaSLzFsnrmSonhvaHazCmYChkEeSXry35xKmvF3"
-        }
-      ],
-      "recipient": "AUCJE7djDBbFrgeKRZ4UMREujAeqnD6L6Ph",
-      "feeScale": 100,
-      "amount": 10000000000,
-      "attachment": "3A836b",
-      "status": "Success",
-      "feeCharged": 10000000,
-      "height": 7232281
-    },
-    ...
-  ]
-]
-```
-##### 2.Get Transaction History by Block Height
-
-Use HTTP GET /blocks/seq/{from}/{to} API
-
-```shell
-$ curl -X GET 'http://<full node ip>:9922/blocks/seq/10/15'
-```
-
-If success, you will get response more or less like the following:
-
-```
-[
-  {
-    "version": 1,
-    "timestamp": 1544759701000897500,
-    "reference": "3Mbnc1bqdWP2AkjWbRxgqkQRJYTVQUxvZApCj1fJT96CJbKs5VuBHQ4JZepunQ1CnY4GAJHSNgxFntT37FCikFZd",
-    "SPOSConsensus": {
-      "mintTime": 1544759701000000000,
-      "mintBalance": 18517768509775
-    },
-    "resourcePricingData": {
-      "computation": 0,
-      "storage": 0,
-      "memory": 0,
-      "randomIO": 0,
-      "sequentialIO": 0
-    },
-    "TransactionMerkleRoot": "AtsZrQaqaBjQupNyJbU819dzkQWTsD1xGRdtkcDd2XYu",
-    "transactions": [
-      {
-        "type": 2,
-        "id": "BCq1Ai1ZjWWCRr1ZZSdz4EeZsjy5UfJM7fhnxzrePQNu",
-        "fee": 10000000,
-        "timestamp": 1544759672378309000,
-        "proofs": [
-          {
-            "proofType": "Curve25519",
-            "publicKey": "3orvgyRKf45FRyiCkcA3CzAGDvyEpBpXZzYGEGZnpZK5",
-            "address": "ATtRykARbyJS1RwNsA6Rn1Um3S7FuVSovHK",
-            "signature": "2bQ9H7fX6HvdDgzMDKb3Pz3U2xf66Ffq5QwU4kJLfWvu9JqrnCArqubKCRENLt9nDbWGQNdkgQRiUTcVPgo7gVYK"
-          }
-        ],
-        "recipient": "AUD9poQ3ernHVx2kUz9XRJvmCJEk6sZrj9T",
-        "feeScale": 100,
-        "amount": 5000000000000,
-        "attachment": "",
-        "status": "Success",
-        "feeCharged": 10000000
-      },
-      {
-        "type": 5,
-        "id": "J7TaTi3YPEiUUa4dch3HfW4FhEct5dFw9LUaWZSE8Vyw",
-        "recipient": "ATtRykARbyJS1RwNsA6Rn1Um3S7FuVSovHK",
-        "timestamp": 1544759701000897500,
-        "amount": 900000000,
-        "currentBlockHeight": 10,
-        "status": "Success",
-        "feeCharged": 0
-      }
-    ],
-    "generator": "ATtRykARbyJS1RwNsA6Rn1Um3S7FuVSovHK",
-    "signature": "44Ub1bUBzBtDMiwkDqomaa6w8J9iAYYXW98jkGY8YiRZHV3EUUTeEpeiBpsSAzQE7X6B8QhiU2vP2UEs82Zb1GzV",
-    "fee": 10000000,
-    "blocksize": 500,
-    "height": 10,
-    "transaction count": 2
-  }
-  ...
-]
-```
-
-##### 3.Get Transaction by ID
-
-Use HTTP GET /transactions/info/{id} API
-
-```shell
-$ curl -X GET 'http://<full node ip>:9922/transactions/info/FZcxfa6oD9VumAseRnDx7bUWeMmbs8c4R9TreEhRwNh3'
-```
-
-If success, you will get response more or less like the following:
-
-```
-{
-  "type": 9,
-  "id": "FZcxfa6oD9VumAseRnDx7bUWeMmbs8c4R9TreEhRwNh3",
-  "fee": 30000000,
-  "timestamp": 1568346104946082600,
-  "proofs": [
-    {
-      "proofType": "Curve25519",
-      "publicKey": "DREQ2s3dQzaKTsvnmKWTnj59ptM1NzXwmap8jYVdPeLC",
-      "address": "AUCJE7djDBbFrgeKRZ4UMREujAeqnD6L6Ph",
-      "signature": "3NPGPyxWW8PDh1Hc3hubZcRPk3KJBkKsjidTVaFR32Jv1obLfBAxEY5Vq27ZNzfPqcvvi64QtaKcZTXZMxbjXGqx"
-    }
-  ],
-  "contractId": "CF8eRsiyXSP9qnrby9AqgzJGJbjYx9aXkbi",
-  "functionIndex": 4,
-  "functionData": "14uNyNb5nFsicZ6dELMKjNAHz3PLM3mjiu6pHsbTrgTYYWb5WRy",
-  "attachment": "",
-  "feeScale": 100,
-  "status": "Success",
-  "feeCharged": 30000000,
-  "height": 7257386
-}
-```
-
 ### Cold Wallet Signature for Sending Token
+
+(Sending Token is a complex progress. We suggest you use SDK to send token)
 
 To make sure asset is safty, the exchange collects Token from hot wallet and stores these Token to cold wallet. When user widthdraw Token, the exchange transfer out to user from cold wallet. 
 

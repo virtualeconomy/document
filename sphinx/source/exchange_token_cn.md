@@ -169,7 +169,9 @@ $ curl -X GET 'http://<节点ip>:9922/contract/balance/AU8R9ri7eG968zuJuLQVLMiUz
 
 返回中， `balance`为换算成最小单位的Amount，1234400000表示用户拥有1234.4个Token
 
-#### 第四步: 发送Token
+#### 第五步: 发送Token
+
+(此过程比较复杂，建议用SDK完成Token发送)
 
 如果用户提Token到自己钱包，交易所可使用 HTTP POST 调用 /contract/execute 完成Token发送
 
@@ -232,7 +234,7 @@ ContractAccount = 6
 然后我们把Token Amount换成最小单位，得到的整数转成8个Bytes：
 
 ```
-(1.5 * 1000 = 1500)
+(1.5 * 1000 = 1500, 把1500转成8个Bytes)
 00 00 00 00 00 00 05 dc
 ```
 
@@ -282,43 +284,65 @@ ContractAccount = 6
 }
 ```
 
-#### 第五步: 查询交易记录
+#### 第六步: 查询交易记录
+
+为了避免繁琐的解析，我们将提供token交易查询服务器供交易所查询链上的Token转账交易信息。当然交易所自行解析合约内容得到Token转账信息也是可以的，解析方法见[这里](https://github.com/virtualeconomy/v-systems/wiki/%E4%BA%A4%E6%98%93%E6%89%80%E4%B8%8AToken%E5%AF%B9%E6%8E%A5%E6%8C%87%E5%8D%97%EF%BC%88%E4%B8%AD%E6%96%87%EF%BC%89/eca5b542522d6d3634167d4f44f84749e16e36e3#%E7%AC%AC%E4%BA%94%E6%AD%A5-%E6%9F%A5%E8%AF%A2%E4%BA%A4%E6%98%93%E8%AE%B0%E5%BD%95)。
+
+##### 1.通过钱包地址查询交易记录
+
+用 HTTP GET 调用 /api/token/transactions?tokenId={tokenId}&address={address}&limit={limit}&start={startIndex} API，其中`start`可不填，上一次查询最后会附带LastEvaluatedKey，用于填入下一次查询的`start`中以实现分页查询，例如，
+
+```shell
+$ curl -X GET 'https://<token交易查询服务器>/api/token/transactions?tokenId={tokenId}&address=AUCJE7djDBbFrgeKRZ4UMREujAeqnD6L6Ph&limit=10
+```
+
+如果成功将返回类似结果:
+
+```
+（稍后补充）
+```
+##### 2.通过区块来查询交易记录
+用 HTTP GET 调用 /api/v1/token/transactions?tokenId={tokenId}&startHeight={from}&endHeight={to}&limit={limit}&start={startIndex} API，例如，
+
+```shell
+$ curl -X GET 'https://<token交易查询服务器>/api/v1/token/transactions?tokenId=TWuETGL96GyQ7KjnTWRJwZiaPhgmvhp76vrNrPbDJ&limit=10&startHeight=6100000&endHeight=6100100'
+```
+
+如果成功将返回类似结果:
+
+```
+（稍后补充）
+```
+
+##### 3.通过交易ID查询交易记录
+用 HTTP GET 调用 /api/token/transaction/{transactionId} API，例如，
+
+```shell
+$ curl -X GET 'https://<token交易查询服务器>/api/token/transaction/FZcxfa6oD9VumAseRnDx7bUWeMmbs8c4R9TreEhRwNh3'
+```
+
+如果成功将返回类似结果:
+
+```
+（稍后补充）
+```
+
+#### 第七步: 查询节点区块高度
+用 HTTP GET 调用 /blocks/height API，例如，
+
+```shell
+$ curl -X GET 'http://<节点ip>:9922/blocks/height'
+```
+
+如果成功将返回类似结果:
+
+```
+{
+  "height": 6145911
+}
+```
 
 如果一笔交易已经打包到区块中，通过`GET /transactions/info/{id}`这个API可以得到确切的知道该笔交易所在区块高度。当节点同步高度高于该交易的所在高度31个区块之后，可确认该笔交易。
-
-**解析functionData得到收Token的地址和Amount的方法：**
-
-例如，我们解析一个Send函数的functionData
-
-```
-function send(Account recipient, Amount amount)
-```
-
-我们在链上交易得到的functionData值为
-
-```
-14uNyNb5nFsicZ6dELMKjNAHz3PLM3mjiu6pHsbTrgTYYWb5WRy
-```
-
-用base58解码，得到
-
-```
-00 02 02 05 54 66 33 43 4d 30 9c 92 cf 07 47 da 4b 40 53 15 22 60 c1 e8 4f 62 05 dd d1 03 00 00 00 00 00 00 05 dc
-```
-
-Address类型固定长度26个Bytes，Amount类型固定长度8个Bytes
-
-```
-00 02（参数个数）
-02（第一个参数的类型ID）
-05 54 66 33 43 4d 30 9c 92 cf 07 47 da 4b 40 53 15 22 60 c1 e8 4f 62 05 dd d1（第一个参数的值）
-03（第二个参数的类型ID）
-00 00 00 00 00 00 05 dc（第二个参数的值）
-```
-
-根据第一个参数的值，我们用得到Bytes Base58编码拿到收Token的地址AU1L8NVL9NTvu4n4XbP3fPJ8b5gQGjRG17W
-
-根据第二个参数的值，把Bytes转化成64位整数，得到1500。如果Token的Unity是1000，则表示这个地址收到了1.5个Token。
 
 几个常见的交易类型ID:
 
@@ -331,172 +355,9 @@ Address类型固定长度26个Bytes，Amount类型固定长度8个Bytes
 9 = 执行合约函数交易
 ```
 
-##### 1.通过钱包地址查询交易记录
-由于节点只能缓存最近10000条记录，中心化交易所应监控交易类型为9（执行合约函数类型交易），Contract ID为指定值的，且Function Index为3（不带Split的Token）或者4（带Split的Token）的交易记录，并存入自己的数据库，此类型记录为Token转账记录，可以方便今后用户查询Token充提时调用。
-
-用 HTTP GET 调用 /transactions/address/{address}/limit/{limit} API，例如，
-
-```shell
-$ curl -X GET 'http://<节点ip>:9922/transactions/address/ATt6P4vSpBvBTHdV5V9PJEHMFp4msJ1fkkX/limit/10'
-```
-
-如果成功将返回类似结果:
-
-```
-[
-  [
-     {
-      "type": 9,
-      "id": "FZcxfa6oD9VumAseRnDx7bUWeMmbs8c4R9TreEhRwNh3",
-      "fee": 30000000,
-      "timestamp": 1568346104946082600,
-      "proofs": [
-        {
-          "proofType": "Curve25519",
-          "publicKey": "DREQ2s3dQzaKTsvnmKWTnj59ptM1NzXwmap8jYVdPeLC",
-          "address": "AUCJE7djDBbFrgeKRZ4UMREujAeqnD6L6Ph",
-          "signature": "3NPGPyxWW8PDh1Hc3hubZcRPk3KJBkKsjidTVaFR32Jv1obLfBAxEY5Vq27ZNzfPqcvvi64QtaKcZTXZMxbjXGqx"
-        }
-      ],
-      "contractId": "CF8eRsiyXSP9qnrby9AqgzJGJbjYx9aXkbi",
-      "functionIndex": 4,
-      "functionData": "14uNyNb5nFsicZ6dELMKjNAHz3PLM3mjiu6pHsbTrgTYYWb5WRy",
-      "attachment": "",
-      "feeScale": 100,
-      "status": "Success",
-      "feeCharged": 30000000,
-      "height": 7257386
-    },
-    {
-      "type": 2,
-      "id": "7YXd42MiPyyUfVmvVyV2b3c6uL3FgtrZTRbHe3sWydC8",
-      "fee": 10000000,
-      "timestamp": 1568256953919000000,
-      "proofs": [
-        {
-          "proofType": "Curve25519",
-          "publicKey": "2wMSwLfwoPTt2BpsTZJ6djd2W92BwYR8nkGjBD4aAae3",
-          "address": "AU1L8NVL9NTvu4n4XbP3fPJ8b5gQGjRG17W",
-          "signature": "2Q5i6BRjTTErRqWDmznWdd7JKMQERs329fZ4cqj2KAXbVot9szaSLzFsnrmSonhvaHazCmYChkEeSXry35xKmvF3"
-        }
-      ],
-      "recipient": "AUCJE7djDBbFrgeKRZ4UMREujAeqnD6L6Ph",
-      "feeScale": 100,
-      "amount": 10000000000,
-      "attachment": "3A836b",
-      "status": "Success",
-      "feeCharged": 10000000,
-      "height": 7232281
-    },
-    ...
-  ]
-]
-```
-##### 2.通过区块来查询交易记录
-用 HTTP GET 调用 /blocks/seq/{from}/{to} API，例如，
-
-```shell
-$ curl -X GET 'http://<节点ip>:9922/blocks/seq/10/15'
-```
-
-如果成功将返回类似结果:
-
-```
-[
-  {
-    "version": 1,
-    "timestamp": 1544759701000897500,
-    "reference": "3Mbnc1bqdWP2AkjWbRxgqkQRJYTVQUxvZApCj1fJT96CJbKs5VuBHQ4JZepunQ1CnY4GAJHSNgxFntT37FCikFZd",
-    "SPOSConsensus": {
-      "mintTime": 1544759701000000000,
-      "mintBalance": 18517768509775
-    },
-    "resourcePricingData": {
-      "computation": 0,
-      "storage": 0,
-      "memory": 0,
-      "randomIO": 0,
-      "sequentialIO": 0
-    },
-    "TransactionMerkleRoot": "AtsZrQaqaBjQupNyJbU819dzkQWTsD1xGRdtkcDd2XYu",
-    "transactions": [
-      {
-        "type": 2,
-        "id": "BCq1Ai1ZjWWCRr1ZZSdz4EeZsjy5UfJM7fhnxzrePQNu",
-        "fee": 10000000,
-        "timestamp": 1544759672378309000,
-        "proofs": [
-          {
-            "proofType": "Curve25519",
-            "publicKey": "3orvgyRKf45FRyiCkcA3CzAGDvyEpBpXZzYGEGZnpZK5",
-            "address": "ATtRykARbyJS1RwNsA6Rn1Um3S7FuVSovHK",
-            "signature": "2bQ9H7fX6HvdDgzMDKb3Pz3U2xf66Ffq5QwU4kJLfWvu9JqrnCArqubKCRENLt9nDbWGQNdkgQRiUTcVPgo7gVYK"
-          }
-        ],
-        "recipient": "AUD9poQ3ernHVx2kUz9XRJvmCJEk6sZrj9T",
-        "feeScale": 100,
-        "amount": 5000000000000,
-        "attachment": "",
-        "status": "Success",
-        "feeCharged": 10000000
-      },
-      {
-        "type": 5,
-        "id": "J7TaTi3YPEiUUa4dch3HfW4FhEct5dFw9LUaWZSE8Vyw",
-        "recipient": "ATtRykARbyJS1RwNsA6Rn1Um3S7FuVSovHK",
-        "timestamp": 1544759701000897500,
-        "amount": 900000000,
-        "currentBlockHeight": 10,
-        "status": "Success",
-        "feeCharged": 0
-      }
-    ],
-    "generator": "ATtRykARbyJS1RwNsA6Rn1Um3S7FuVSovHK",
-    "signature": "44Ub1bUBzBtDMiwkDqomaa6w8J9iAYYXW98jkGY8YiRZHV3EUUTeEpeiBpsSAzQE7X6B8QhiU2vP2UEs82Zb1GzV",
-    "fee": 10000000,
-    "blocksize": 500,
-    "height": 10,
-    "transaction count": 2
-  }
-  ...
-]
-```
-
-##### 3.通过交易ID查询交易记录
-用 HTTP GET 调用 /transactions/info/{id} API，例如，
-
-```shell
-$ curl -X GET 'http://<节点ip>:9922/transactions/info/FZcxfa6oD9VumAseRnDx7bUWeMmbs8c4R9TreEhRwNh3'
-```
-
-如果成功将返回类似结果:
-
-```
-{
-  "type": 9,
-  "id": "FZcxfa6oD9VumAseRnDx7bUWeMmbs8c4R9TreEhRwNh3",
-  "fee": 30000000,
-  "timestamp": 1568346104946082600,
-  "proofs": [
-    {
-      "proofType": "Curve25519",
-      "publicKey": "DREQ2s3dQzaKTsvnmKWTnj59ptM1NzXwmap8jYVdPeLC",
-      "address": "AUCJE7djDBbFrgeKRZ4UMREujAeqnD6L6Ph",
-      "signature": "3NPGPyxWW8PDh1Hc3hubZcRPk3KJBkKsjidTVaFR32Jv1obLfBAxEY5Vq27ZNzfPqcvvi64QtaKcZTXZMxbjXGqx"
-    }
-  ],
-  "contractId": "CF8eRsiyXSP9qnrby9AqgzJGJbjYx9aXkbi",
-  "functionIndex": 4,
-  "functionData": "14uNyNb5nFsicZ6dELMKjNAHz3PLM3mjiu6pHsbTrgTYYWb5WRy",
-  "attachment": "",
-  "feeScale": 100,
-  "status": "Success",
-  "feeCharged": 30000000,
-  "height": 7257386
-}
-```
-
 ### 冷钱包支付Token签名
+
+(此过程比较复杂，建议用SDK完成Token发送)
 
 为了资产安全，一般交易所会把用户账号上的热钱包的Token转移到冷钱包存储，当用户提Token的时候再把冷钱包的Token转出来给用户。
 
