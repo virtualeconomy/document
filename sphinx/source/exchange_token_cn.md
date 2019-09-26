@@ -290,41 +290,137 @@ ContractAccount = 6
 
 ##### 1.通过钱包地址查询交易记录
 
-用 HTTP GET 调用 /api/token/transactions?tokenId={tokenId}&address={address}&limit={limit}&start={startIndex} API，其中`start`可不填，上一次查询最后会附带LastEvaluatedKey，用于填入下一次查询的`start`中以实现分页查询，例如，
+用 HTTP GET 调用 /token/transactions?tokenId={tokenId}&address={address}&limit={limit}&start={startIndex} API，其中`start`可不填，上一次查询最后会附带LastEvaluatedKey，用于填入下一次查询的`start`中以实现分页查询，例如，
 
 ```shell
-$ curl -X GET 'https://<token交易查询服务器>/api/token/transactions?tokenId={tokenId}&address=AUCJE7djDBbFrgeKRZ4UMREujAeqnD6L6Ph&limit=10
+$ curl -X GET 'https://token-explorer-dev.vcloud.systems/api/v1/token/transactions?tokenId= TWZ11xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxhx1wSY&address=ARMMfCxxxxxxxxxxxxxxxxxxxxxxxiAZFSS&limit=10
 ```
 
 如果成功将返回类似结果:
 
 ```
-（稍后补充）
+{
+    "address": "address_in_query_parameter_or_null",
+    "limit": "limit_in_query_parameter_or_default_10",
+    "result": {
+        "Count": 1,
+        "Items": [
+            {
+                "confirmations": 6700,
+                "content": {
+                    "data": {
+                        "amount": 500000000000000,
+                        "amountStr": "500000000000000",
+                        "recipient": "ARBGvExxxxxxxxxxxxxxxxxxxxxxaMD6yyP"
+                    },
+                    "functionIndex": 3
+                },
+                "contractId": "CC3KZzxxxxxxxxxxxxxxxxxxxxxxxpEPfnM",
+                "createdAt": 0,
+                "functionIndex": 3,
+                "functionIndexType": "send",
+                "height": 6442672,
+                "signer": "ARMMfCxxxxxxxxxxxxxxxxxxxxxxxiAZFSS",
+                "status": "Success",
+                "timestamp": 1560000000000,
+                "timestampStr": "1560000000000000",
+                "tokenId": "TWZ11xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxhx1wSY",
+                "transactionFee": 0.3,
+                "transactionId": "8UJzh7xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxWbp4YB",
+                "updatedAt": 0,
+                "verifications": 1
+            }
+        ],
+        "LastEvaluatedKey": 1569395070031
+    },
+    "tokenId": "tokenId_in_query_parameter"
+}
 ```
 ##### 2.通过区块来查询交易记录
-用 HTTP GET 调用 /api/v1/token/transactions?tokenId={tokenId}&startHeight={from}&endHeight={to}&limit={limit}&start={startIndex} API，例如，
+用 HTTP GET 调用 /token/transactions?tokenId={tokenId}&startHeight={from}&endHeight={to}&limit={limit}&start={startIndex} API，例如，
 
 ```shell
-$ curl -X GET 'https://<token交易查询服务器>/api/v1/token/transactions?tokenId=TWuETGL96GyQ7KjnTWRJwZiaPhgmvhp76vrNrPbDJ&limit=10&startHeight=6100000&endHeight=6100100'
+$ curl -X GET 'https://token-explorer-dev.vcloud.systems/api/v1/token/transactions?tokenId= TWZ11xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxhx1wSY&limit=10&startHeight=6100000&endHeight=6100100'
 ```
 
 如果成功将返回类似结果:
 
 ```
-（稍后补充）
+{
+    "address": "address_in_query_parameter_or_null",
+    "limit": "limit_in_query_parameter_or_default_10",
+    "result": {
+        "Count": 1,
+        "Items": [
+            {
+                "confirmations": 6700,
+                "content": {
+                    "data": {
+                        "amount": 500000000000000,
+                        "amountStr": "500000000000000",
+                        "recipient": "ARBGvExxxxxxxxxxxxxxxxxxxxxxaMD6yyP"
+                    },
+                    "functionIndex": 3
+                },
+                "contractId": "CC3KZzxxxxxxxxxxxxxxxxxxxxxxxpEPfnM",
+                "createdAt": 0,
+                "functionIndex": 3,
+                "functionIndexType": "send",
+                "height": 6442672,
+                "signer": "ARMMfCxxxxxxxxxxxxxxxxxxxxxxxiAZFSS",
+                "status": "Success",
+                "timestamp": 1560000000000,
+                "timestampStr": "1560000000000000",
+                "tokenId": "TWZ11xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxhx1wSY",
+                "transactionFee": 0.3,
+                "transactionId": "8UJzh7xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxWbp4YB",
+                "updatedAt": 0,
+                "verifications": 1
+            }
+        ],
+        "LastEvaluatedKey": 1569395070031
+    },
+    "tokenId": "tokenId_in_query_parameter"
+}
 ```
 
 ##### 3.通过交易ID查询交易记录
-用 HTTP GET 调用 /api/token/transaction/{transactionId} API，例如，
+用 HTTP GET 调用 /token/transaction/{transactionId} API，例如，
 
 ```shell
-$ curl -X GET 'https://<token交易查询服务器>/api/token/transaction/FZcxfa6oD9VumAseRnDx7bUWeMmbs8c4R9TreEhRwNh3'
+$ curl -X GET 'https://token-explorer-dev.vcloud.systems/api/v1/token/transaction/HNvRwxxxxxxxxxxxxxxxxxxxxxxxxxxxxxVU9N4o'
 ```
 
 如果成功将返回类似结果:
 
 ```
-（稍后补充）
+{
+    "result": {
+        "confirmations": 6800,
+        "content": {
+            "data": {
+                "amount": 500000000000000,
+                "amountStr": "500000000000000",
+                "recipient": "ARMMfCxxxxxxxxxxxxxxxxxxxxxxxxiAZFAA"
+            },
+            "functionIndex": 3
+        },
+        "contractId": "CC3KZzxxxxxxxxxxxxxxxxxxxxxxxxEPfasd",
+        "createdAt": 0,
+        "functionIndex": 3,
+        "functionIndexType": "send",
+        "height": 6440000,
+        "signer": "ARBGvExxxxxxxxxxxxxxxxxxxxxxxxMD1yyP",
+        "status": "Success",
+        "timestamp": 1569390000000,
+        "timestampStr": "1569390000000000000",
+        "tokenId": "TWZ11xxxxxxxxxxxxxxxxxxxxxxxxxxxxxhx3wSY",
+        "transactionFee": 0.3,
+        "transactionId": "HNvRwxxxxxxxxxxxxxxxxxxxxxxxxxxxxxVU9N4o",
+        "updatedAt": 0,
+        "verifications": 1
+    }
+}
 ```
 
 #### 第七步: 查询节点区块高度

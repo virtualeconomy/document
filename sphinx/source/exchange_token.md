@@ -291,19 +291,101 @@ To simplify contract parse on chain, we also provide token transaction query nod
 
 ##### 1.Get Transaction History by Address
 
-Use HTTP GET /api/token/transactions?tokenId={tokenId}&address={address}&limit={limit}&start={startIndex} API. `start` is optional. In reponse for each query, you will get LastEvaluatedKey, which you can use it as start input value for next paging query. For example,
+Use HTTP GET /token/transactions?tokenId={tokenId}&address={address}&limit={limit}&start={startIndex} API. `start` is optional. In reponse for each query, you will get LastEvaluatedKey, which you can use it as start input value for next paging query. For example,
 
 ```shell
-$ curl -X GET 'https://<token transaction query node>/api/token/transactions?tokenId={tokenId}&address={address}&limit={limit}&start={startIndex}
+$ curl -X GET 'https://token-explorer-dev.vcloud.systems/api/v1/token/transactions?tokenId= TWZ11xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxhx1wSY&address=ARMMfCxxxxxxxxxxxxxxxxxxxxxxxiAZFSS&limit=10
+```
+
+If success, you will get response more or less like the following:
+
+```
+{
+    "address": "address_in_query_parameter_or_null",
+    "limit": "limit_in_query_parameter_or_default_10",
+    "result": {
+        "Count": 1,
+        "Items": [
+            {
+                "confirmations": 6700,
+                "content": {
+                    "data": {
+                        "amount": 500000000000000,
+                        "amountStr": "500000000000000",
+                        "recipient": "ARBGvExxxxxxxxxxxxxxxxxxxxxxaMD6yyP"
+                    },
+                    "functionIndex": 3
+                },
+                "contractId": "CC3KZzxxxxxxxxxxxxxxxxxxxxxxxpEPfnM",
+                "createdAt": 0,
+                "functionIndex": 3,
+                "functionIndexType": "send",
+                "height": 6442672,
+                "signer": "ARMMfCxxxxxxxxxxxxxxxxxxxxxxxiAZFSS",
+                "status": "Success",
+                "timestamp": 1560000000000,
+                "timestampStr": "1560000000000000",
+                "tokenId": "TWZ11xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxhx1wSY",
+                "transactionFee": 0.3,
+                "transactionId": "8UJzh7xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxWbp4YB",
+                "updatedAt": 0,
+                "verifications": 1
+            }
+        ],
+        "LastEvaluatedKey": 1569395070031
+    },
+    "tokenId": "tokenId_in_query_parameter"
+}
 ```
 
 
 ##### 2.Get Transaction History by Block Height
 
-Use HTTP GET /api/v1/token/transactions?tokenId={tokenId}&startHeight={from}&endHeight={to}&limit={limit}&start={startIndex} API
+Use HTTP GET /token/transactions?tokenId={tokenId}&startHeight={from}&endHeight={to}&limit={limit}&start={startIndex} API
 
 ```shell
-$ curl -X GET 'http://<token transaction query node>/api/v1/token/transactions?tokenId=TWuETGL96GyQ7KjnTWRJwZiaPhgmvhp76vrNrPbDJ&limit=10&startHeight=6100000&endHeight=6100100'
+$ curl -X GET 'https://token-explorer-dev.vcloud.systems/api/v1/token/transactions?tokenId= TWZ11xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxhx1wSY&limit=10&startHeight=6100000&endHeight=6100100'
+```
+
+If success, you will get response more or less like the following:
+
+```
+{
+    "address": "address_in_query_parameter_or_null",
+    "limit": "limit_in_query_parameter_or_default_10",
+    "result": {
+        "Count": 1,
+        "Items": [
+            {
+                "confirmations": 6700,
+                "content": {
+                    "data": {
+                        "amount": 500000000000000,
+                        "amountStr": "500000000000000",
+                        "recipient": "ARBGvExxxxxxxxxxxxxxxxxxxxxxaMD6yyP"
+                    },
+                    "functionIndex": 3
+                },
+                "contractId": "CC3KZzxxxxxxxxxxxxxxxxxxxxxxxpEPfnM",
+                "createdAt": 0,
+                "functionIndex": 3,
+                "functionIndexType": "send",
+                "height": 6442672,
+                "signer": "ARMMfCxxxxxxxxxxxxxxxxxxxxxxxiAZFSS",
+                "status": "Success",
+                "timestamp": 1560000000000,
+                "timestampStr": "1560000000000000",
+                "tokenId": "TWZ11xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxhx1wSY",
+                "transactionFee": 0.3,
+                "transactionId": "8UJzh7xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxWbp4YB",
+                "updatedAt": 0,
+                "verifications": 1
+            }
+        ],
+        "LastEvaluatedKey": 1569395070031
+    },
+    "tokenId": "tokenId_in_query_parameter"
+}
 ```
 
 
@@ -312,7 +394,39 @@ $ curl -X GET 'http://<token transaction query node>/api/v1/token/transactions?t
 Use HTTP GET /transactions/info/{id} API
 
 ```shell
-$ curl -X GET 'https://<token transaction query node>/api/token/transaction/FZcxfa6oD9VumAseRnDx7bUWeMmbs8c4R9TreEhRwNh3'
+$ curl -X GET 'https://token-explorer-dev.vcloud.systems/api/v1/token/transaction/HNvRwxxxxxxxxxxxxxxxxxxxxxxxxxxxxxVU9N4o'
+```
+
+If success, you will get response more or less like the following:
+
+```
+{
+    "result": {
+        "confirmations": 6800,
+        "content": {
+            "data": {
+                "amount": 500000000000000,
+                "amountStr": "500000000000000",
+                "recipient": "ARMMfCxxxxxxxxxxxxxxxxxxxxxxxxiAZFAA"
+            },
+            "functionIndex": 3
+        },
+        "contractId": "CC3KZzxxxxxxxxxxxxxxxxxxxxxxxxEPfasd",
+        "createdAt": 0,
+        "functionIndex": 3,
+        "functionIndexType": "send",
+        "height": 6440000,
+        "signer": "ARBGvExxxxxxxxxxxxxxxxxxxxxxxxMD1yyP",
+        "status": "Success",
+        "timestamp": 1569390000000,
+        "timestampStr": "1569390000000000000",
+        "tokenId": "TWZ11xxxxxxxxxxxxxxxxxxxxxxxxxxxxxhx3wSY",
+        "transactionFee": 0.3,
+        "transactionId": "HNvRwxxxxxxxxxxxxxxxxxxxxxxxxxxxxxVU9N4o",
+        "updatedAt": 0,
+        "verifications": 1
+    }
+}
 ```
 
 
