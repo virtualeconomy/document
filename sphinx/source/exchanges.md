@@ -212,7 +212,7 @@ You could use the following method to call APIs.
 
 We strongly suggest you use SDK to do integration. Currently, we provide the following version of SDK:
 
-Python version SDK [pyvsystems](https://github.com/virtualeconomy/pyvsystems). The pyvsystems specification is [here](https://github.com/virtualeconomy/pyvsystems/wiki/PYVSYSTEMS-User-Guide-Specification-%28English%29).
+Python version SDK [pyvsystems](https://github.com/virtualeconomy/pyvsystems). The pyvsystems specification is [here](https://github.com/virtualeconomy/pyvsystems/wiki/PYVSYSTEMS-User-Guide-Specification-%28English%29). Sample code refers [here](https://github.com/virtualeconomy/pyvsystems/wiki/Sample-Code-for-Exchange).
 
 JavaScript version SDK [js-v-sdk](https://github.com/virtualeconomy/js-v-sdk)
 

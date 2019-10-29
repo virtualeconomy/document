@@ -55,6 +55,8 @@ Euclid的所有当前contract function都是由封闭的operation code组成，�
 
 我们强烈建议您使用SDK对接链上信息及管理钱包，目前我们提供SDK有如下版本：
 
+Python版SDK [pyvsystems](https://github.com/virtualeconomy/pyvsystems) 详情请参阅[这里](https://github.com/virtualeconomy/pyvsystems/wiki/PYVSYSTEMS-使用详细指南%28中文%29)，代码范例参阅[这里](https://github.com/virtualeconomy/pyvsystems/wiki/Sample-Code-for-Exchange)。
+
 JavaScript版SDK [js-v-sdk](https://github.com/virtualeconomy/js-v-sdk)
 
 Java版SDK [java-v-sdk](https://github.com/virtualeconomy/java-v-sdk)
